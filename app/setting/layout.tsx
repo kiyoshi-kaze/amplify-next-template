@@ -17,9 +17,7 @@ export default function RootLayout({
   return (
     <>
     <header>会社紹介</header>
-
     <main className={inter.className}>{children}</main>
-
     </>
   );
 }
