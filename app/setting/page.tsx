@@ -27,8 +27,15 @@ export default function App() {
   }, []);
 
   function createTodo() {
+    //追加。
+    const todocontent = window.prompt("内容を入力してください。");
+    const todolabel = window.prompt("ラベルを入力してください。");
+    const todovalue = window.prompt("値を入力してください。");    
     client.models.Todo.create({
-      content: window.prompt("Todo content"),
+      //content: window.prompt("Todo content"),
+      content: todocontent,
+      label: todolabel,
+      value: todovalue,
     });
   }
 
@@ -38,7 +45,7 @@ export default function App() {
       <button onClick={createTodo}>+ new</button>
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id}>{todo.content}</li>
+          <li key={todo.id}>{todo.content}&nbsp;{todo.label}&nbsp;{todo.value}</li>
         ))}
       </ul>
       <div>
