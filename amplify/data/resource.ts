@@ -50,9 +50,9 @@ const schema = a.schema({
     .for(a.ref("addPost")) 
     .authorization(allow => [allow.publicApiKey()])
     .handler(
-        a.handler.custom({
-            entry: './receivePost.js'
-        })
+      a.handler.custom({
+        entry: './receivePost.js'
+      })
     ),
 
   getPost: a
