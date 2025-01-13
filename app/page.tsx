@@ -14,6 +14,7 @@ const client = generateClient<Schema>();
 
 export default function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  const [posts, setPosts] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
 
   function listTodos() {
     client.models.Todo.observeQuery().subscribe({
@@ -23,13 +24,35 @@ export default function App() {
 
   useEffect(() => {
     listTodos();
+
   }, []);
+
+
+
 
   function createTodo() {
     client.models.Todo.create({
       content: window.prompt("Todo content"),
     });
   }
+
+  //step5にて追加。
+  async function addPost () {
+    const {data} = await client.mutations.addPost({
+      title: window.prompt("Title"),
+      content: "My Content",
+      author: "Chris",
+    },{authMode: "apiKey"});
+    console.log(data)
+  }
+
+  async function getPost() {
+    //const postId = window.prompt("Enter post ID");
+    const {data} = await client.queries.getPost({
+      id: "a12b2004-a0ac-4dbe-9d90-00942a285a09",
+    });
+  }
+
 
   return (
     <main>
@@ -40,6 +63,15 @@ export default function App() {
           <li key={todo.id}>{todo.content}</li>
         ))}
       </ul>
+
+      <h1>My posts</h1>
+      <button onClick={addPost}>+ new post</button>
+      <ul>
+        {posts.map((post) => (
+          <li key={post.id}>{post.content}</li>
+        ))}
+      </ul>
+
       <div>
         🥳 App successfully hosted. Try creating a new todo.
         <br />
