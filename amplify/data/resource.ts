@@ -40,17 +40,6 @@ const schema = a.schema({
       //})
     //),
 
-    //カスタムサブスクリプションを実装
-  receivePost: a
-    .subscription()
-    .for(a.ref("getPost")) 
-    .authorization(allow => [allow.publicApiKey()])
-    .handler(
-      a.handler.custom({
-          entry: './receivePost.js'
-      })
-  ),
-
 
   getPost: a
     .query()

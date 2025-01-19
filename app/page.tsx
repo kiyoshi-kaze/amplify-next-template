@@ -15,7 +15,7 @@ const client = generateClient<Schema>();
 
 export default function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
-  //const [posts, setPosts] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
+  const [posts, setPosts] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
 
   function listTodos() {
     client.models.Todo.observeQuery().subscribe({
@@ -25,8 +25,18 @@ export default function App() {
 
   useEffect(() => {
     listTodos();
+    getPost(); // Postの初期表示
+  })
 
+  //getPostを追記
+  async function getPost () {
+    const { data, errors } = await client.queries.getPost({
+      Device: "ebd64f9d-e097-4f4c-b343-95d83f1d690b",
+      DeviceDatetime: "ebd64f9d-e097-4f4c-b343-95d83f1d690b",
     });
+    console.log('get=',data)
+  }
+
 
 
 
