@@ -51,6 +51,7 @@ const schema = a.schema({
         })
     ),
 
+    
   getPost: a
     .query()
     .arguments({
