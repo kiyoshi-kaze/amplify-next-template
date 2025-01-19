@@ -40,7 +40,19 @@ const schema = a.schema({
       //})
     //),
 
-    getPost: a
+    //カスタムサブスクリプションを実装
+  receivePost: a
+    .subscription()
+    .for(a.ref("addPost")) 
+    .authorization(allow => [allow.publicApiKey()])
+    .handler(
+      a.handler.custom({
+          entry: './receivePost.js'
+      })
+  ),
+
+
+  getPost: a
     .query()
     .arguments({
       Device: a.string().required(),
