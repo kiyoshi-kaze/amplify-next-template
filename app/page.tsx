@@ -50,19 +50,20 @@ export default function App() {
   }
 
   //step5にて追加。
-  async function addPost () {
-    const {data} = await client.mutations.addPost({
-      title: window.prompt("Title"),
-      content: "My Content",
-      author: "Chris",
-    },{authMode: "apiKey"});
+  //async function addPost () {
+    //const {data} = await client.mutations.addPost({
+      //title: window.prompt("Title"),
+      //content: "My Content",
+      //author: "Chris",
+    //},{authMode: "apiKey"});
     //console.log(data)
-  }
+  //}
 
   //getPostを追記
   async function getPost () {
     const { data, errors } = await client.queries.getPost({
-      id: "b59378a8-f13a-4bd8-b83f-05e3fec7238e"
+      Device: "b59378a8-f13a-4bd8-b83f-05e3fec7238e",
+      DeviceDatetime: "b59378a8-f13a-4bd8-b83f-05e3fec7238e",
     });
     console.log('get=',data)
 
@@ -84,10 +85,10 @@ export default function App() {
       </ul>
 
       <h1>My posts</h1>
-      <button onClick={addPost}>+ new post</button>
+
       <ul>
         {posts.map((post) => (
-          <li key={post.id}>{post.title}</li>
+          <li key={post.Device}>{post.title}</li>
         ))}
       </ul>
 
