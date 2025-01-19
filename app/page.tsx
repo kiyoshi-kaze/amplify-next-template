@@ -8,6 +8,7 @@ import { Amplify } from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
 
+
 Amplify.configure(outputs);
 
 const client = generateClient<Schema>();
@@ -24,9 +25,24 @@ export default function App() {
 
   useEffect(() => {
     listTodos();
+    getPost(); // Postの初期表示
+
+    //サブスクリプションの設定をuseEffect()の中に移動。
+    const sub = client.subscriptions.receivePost()
+    .subscribe({
+      next: event => {
+        console.log(event)
+        setPosts(prevPosts => [...prevPosts, event]);
+      },
+    });
+
+    // クリーンアップ関数を返してサブスクリプションを解除
+    return () => sub.unsubscribe();
+
   }, []);
 
 
+  
   function createTodo() {
     client.models.Todo.create({
       content: window.prompt("Todo content"),
@@ -40,16 +56,22 @@ export default function App() {
       content: "My Content",
       author: "Chris",
     },{authMode: "apiKey"});
-    console.log(data)
+    //console.log(data)
   }
 
-  async function getPost() {
-    //const postId = window.prompt("Enter post ID");
-    const {data} = await client.queries.getPost({
-      id: "66f3adb2-0898-4d9a-87af-1ec8d074b6c4",
+  //getPostを追記
+  async function getPost () {
+    const { data, errors } = await client.queries.getPost({
+      id: "ebd64f9d-e097-4f4c-b343-95d83f1d690b"
     });
-  }
+    console.log('get=',data)
 
+    //画面への転送を追記
+    if (data) {
+      setPosts(prevPosts => [...prevPosts, data]);
+    }
+
+  }
 
   return (
     <main>
@@ -65,7 +87,7 @@ export default function App() {
       <button onClick={addPost}>+ new post</button>
       <ul>
         {posts.map((post) => (
-          <li key={post.id}>{post.content}</li>
+          <li key={post.id}>{post.title}</li>
         ))}
       </ul>
 
