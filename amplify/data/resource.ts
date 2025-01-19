@@ -16,8 +16,7 @@ const schema = a.schema({
   //step1にて追加。
   Post: a.customType({
     id: a.id().required(),
-    //author: a.string().required(),
-    author: a.id().required(),
+    author: a.string().required(),
     title: a.string(),
     content: a.string(),
     url: a.string(),
