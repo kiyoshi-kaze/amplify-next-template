@@ -43,7 +43,7 @@ const schema = a.schema({
     //カスタムサブスクリプションを実装
   receivePost: a
     .subscription()
-    .for(a.ref("addPost")) 
+    .for(a.ref("getPost")) 
     .authorization(allow => [allow.publicApiKey()])
     .handler(
       a.handler.custom({
