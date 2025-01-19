@@ -22,23 +22,23 @@ const schema = a.schema({
   }),
 
   //step3にて追加。
-  addPost: a
-    .mutation()
-    .arguments({
-      Device: a.string().required(),
-      DeviceDatetime: a.string().required(),
-      title: a.string(),
-      content: a.string(),
-      url: a.string(),
-    })
-    .returns(a.ref("Post"))
-    .authorization(allow => [allow.publicApiKey()])
-    .handler(
-      a.handler.custom({
-        dataSource: "ExternalPostTableDataSource",
-        entry: "./addPost.js",
-      })
-    ),
+  //addPost: a
+    //.mutation()
+    //.arguments({
+      //Device: a.string().required(),
+      //DeviceDatetime: a.string().required(),
+      //title: a.string(),
+      //content: a.string(),
+      //url: a.string(),
+    //})
+    //.returns(a.ref("Post"))
+    //.authorization(allow => [allow.publicApiKey()])
+    //.handler(
+      //a.handler.custom({
+        //dataSource: "ExternalPostTableDataSource",
+        //entry: "./addPost.js",
+      //})
+    //),
 
   //カスタムサブスクリプションを実装
   receivePost: a
