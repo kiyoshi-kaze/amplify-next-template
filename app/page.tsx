@@ -63,6 +63,7 @@ export default function App() {
   async function getPost () {
     const { data, errors } = await client.queries.getPost({
       id: "b59378a8-f13a-4bd8-b83f-05e3fec7238e"
+      //author : "Chris"
     });
     console.log('get=',data)
 
