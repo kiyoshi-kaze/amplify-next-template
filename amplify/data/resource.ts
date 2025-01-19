@@ -40,32 +40,7 @@ const schema = a.schema({
       //})
     //),
 
-  //カスタムサブスクリプションを実装
-  receivePost: a
-    .subscription()
-    .for(a.ref("addPost")) 
-    .authorization(allow => [allow.publicApiKey()])
-    .handler(
-        a.handler.custom({
-            entry: './receivePost.js'
-        })
-    ),
 
-    
-  getPost: a
-    .query()
-    .arguments({
-      Device: a.string().required(),
-      DeviceDatetime: a.string().required(),
-     })
-    .returns(a.ref("Post"))
-    .authorization(allow => [allow.publicApiKey()])
-    .handler(
-      a.handler.custom({
-        dataSource: "ExternalPostTableDataSource",
-        entry: "./getPost.js",
-      })
-    ),
 
 });
 

@@ -15,7 +15,7 @@ const client = generateClient<Schema>();
 
 export default function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
-  const [posts, setPosts] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
+  //const [posts, setPosts] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
 
   function listTodos() {
     client.models.Todo.observeQuery().subscribe({
@@ -26,19 +26,8 @@ export default function App() {
   useEffect(() => {
     listTodos();
 
-    //サブスクリプションの設定をuseEffect()の中に移動。
-    const sub = client.subscriptions.receivePost()
-    .subscribe({
-      next: event => {
-        console.log(event)
-        setPosts(prevPosts => [...prevPosts, event]);
-      },
     });
 
-    // クリーンアップ関数を返してサブスクリプションを解除
-    return () => sub.unsubscribe();
-
-  }, []);
 
 
   
