@@ -62,7 +62,7 @@ export default function App() {
       <h1>My posts</h1>
       <ul>
         {posts.map((post) => (
-          <li key={post.Device}>{post.DeviceDatetime}</li>
+          <li key={`${post.Device}-${post.DeviceDatetime}`}> {post.content} </li>
         ))}
       </ul>
 
