@@ -31,8 +31,8 @@ export default function App() {
   //getPostを追記
   async function getPost () {
     const { data, errors } = await client.queries.getPost({
-      Device: "ebd64f9d-e097-4f4c-b343-95d83f1d690b",
-      DeviceDatetime: "ebd64f9d-e097-4f4c-b343-95d83f1d690b",
+      Device: "dev-001",
+      DeviceDatetime: "2024",
     });
     console.log('get=',data)
   }
@@ -56,6 +56,13 @@ export default function App() {
       <ul>
         {todos.map((todo) => (
           <li key={todo.id}>{todo.content}</li>
+        ))}
+      </ul>
+
+      <h1>My posts</h1>
+      <ul>
+        {posts.map((post) => (
+          <li key={post.Device}>{post.DeviceDatetime}</li>
         ))}
       </ul>
 
