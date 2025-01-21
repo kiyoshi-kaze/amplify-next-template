@@ -42,7 +42,6 @@ export default function App() {
   }, []);
 
 
-  
   function createTodo() {
     client.models.Todo.create({
       content: window.prompt("Todo content"),
@@ -52,17 +51,18 @@ export default function App() {
   //step5にて追加。
   async function addPost () {
     const {data} = await client.mutations.addPost({
-      title: window.prompt("Title"),
-      content: "My Content",
-      author: "Chris",
+      Controller: window.prompt("Controller"),
+
     },{authMode: "apiKey"});
     //console.log(data)
   }
 
   //getPostを追記
   async function getPost () {
+
     const { data, errors } = await client.queries.getPost({
-      id: "b59378a8-f13a-4bd8-b83f-05e3fec7238e"
+      Device: "AC233FA3DA16" , // 空文字列をデフォルト値として設定
+      //Controller: "Mutsu01",
     });
     console.log('get=',data)
 
@@ -87,9 +87,10 @@ export default function App() {
       <button onClick={addPost}>+ new post</button>
       <ul>
         {posts.map((post) => (
-          <li key={post.id}>{post.title}</li>
+          <li key={post.Device}>{post.Controller}</li>
         ))}
       </ul>
+
 
       <div>
         🥳 App successfully hosted. Try creating a new todo.
