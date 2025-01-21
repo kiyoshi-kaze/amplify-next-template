@@ -20,6 +20,6 @@ export const response = (ctx) => ctx.result;
       //expression: 'Controller = :controller',
       //expressionValues: ddb.toMapValues({ ':controller': ControllerDevice })
     //},
-    //index: 'Controller-DeviceType-index'
+    //index: 'Controller-index'
   //};
 //}
