@@ -10,7 +10,7 @@
 
 import { util } from '@aws-appsync/utils';
 
-export function request(ctx) {
+export function request() {
   return {
     operation: 'Query',
     query: {
