@@ -11,12 +11,11 @@
 import { util } from '@aws-appsync/utils';
 
 export function request(ctx) {
-  const { owner } = ctx.args;
   return {
     operation: 'Query',
     query: {
-      expression: 'ownerId = :ownerId',
-      expressionValues: util.dynamodb.toMapValues({ ':ownerId': owner })
+      expression: 'Controller = :controller',
+      expressionValues: util.dynamodb.toMapValues({ ':controller': 'Mutsu01' })
     },
     index: 'Controller-index'
   };
