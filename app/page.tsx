@@ -15,9 +15,16 @@ Amplify.configure(outputs);
 const client = generateClient<Schema>();
 
 export default function App() {
+
+  interface Device {
+    Device: string;
+    Controller?: string;
+  }
+
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
   const [posts, setPosts] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
   const [devices, setDevices] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
+
 
 
   function listTodos() {
@@ -91,8 +98,11 @@ export default function App() {
         // null または undefined を除外する。また、dataがShallowPretty型の配列であると仮定。
         const filteredData = data.filter((device) => device !== null && device !== undefined);
         setDevices(prevDevices => [...prevDevices, ...filteredData]);
+       
+
       }
     }
+
 
   return (
     <main>
@@ -115,8 +125,8 @@ export default function App() {
       <h1>My lists</h1>
       <button onClick={addPost}>+ new post</button>
       <ul>
-        {posts.map((post) => (
-          <li key={post.Device}>{post.Controller}</li>
+        {devices.map((device) => (
+          <li key={device.Device}>{device.Controller}</li>
         ))}
       </ul>
 
