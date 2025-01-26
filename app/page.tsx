@@ -17,6 +17,8 @@ const client = generateClient<Schema>();
 export default function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
   const [posts, setPosts] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
+  const [devices, setDevices] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
+
 
   function listTodos() {
     client.models.Todo.observeQuery().subscribe({
@@ -84,6 +86,11 @@ export default function App() {
       //画面への転送を追記
       if (data) {
         //setPosts(prevPosts => [...prevPosts, data]);
+        //setDevices(prevDevices => [...prevDevices, ...data]);
+        //prevDevices の型と setDevices の型の不一致を解消するためdataをフィルタリングして
+        // null または undefined を除外する。また、dataがShallowPretty型の配列であると仮定。
+        const filteredData = data.filter((device) => device !== null && device !== undefined);
+        setDevices(prevDevices => [...prevDevices, ...filteredData]);
       }
     }
 
