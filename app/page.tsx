@@ -92,15 +92,15 @@ export default function App() {
       console.log('list=',data)
   
       //画面への転送を追記
-      if (data) {
+      //if (data) {
         //setPosts(prevPosts => [...prevPosts, data]);
         //setDevices(prevDevices => [...prevDevices, ...data]);
         //prevDevices の型と setDevices の型の不一致を解消するためdataをフィルタリングして
         // null または undefined を除外する。また、dataがShallowPretty型の配列であると仮定。
-        const filteredData = data.filter((device) => device !== null && device !== undefined);
-        setDevices(prevDevices => [...prevDevices, ...filteredData]);
+        //const filteredData = data.filter((device) => device !== null && device !== undefined);
+        //setDevices(prevDevices => [...prevDevices, ...filteredData]);
        
-      }
+      //}
     }
 
   //listIotByControllerを追記。
