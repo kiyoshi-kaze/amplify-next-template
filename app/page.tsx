@@ -24,7 +24,7 @@ export default function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
   const [posts, setPosts] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
   const [devices, setDevices] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
-
+  const [Iotdatas, setIots] = useState<Array<Schema["IotData"]["type"]>>([]); //Postを追加。
 
 
   function listTodos() {
@@ -37,6 +37,7 @@ export default function App() {
     listTodos();
     getPost(); // Postの初期表示
     listDeviceByController (); // Postの初期表示
+    listIotDataByController (); // Postの初期表示
 
     //サブスクリプションの設定をuseEffect()の中に移動。
     const sub = client.subscriptions.receivePost()
@@ -99,10 +100,23 @@ export default function App() {
         const filteredData = data.filter((device) => device !== null && device !== undefined);
         setDevices(prevDevices => [...prevDevices, ...filteredData]);
        
-
       }
     }
 
+  //listIotByControllerを追記。
+  async function listIotDataByController () {
+
+    console.log('listIotDataByController called'); // 関数が呼び出されたことを確認
+
+    const { data, errors } = await client.queries.listIotDataByController({
+      Controller: "Mutsu01",//Controllerが"Mutsu01"であるデータを抽出。
+      //DeviceDatetime: "2024-06-30 23:28:28+09:00",
+    });
+    
+    console.log('Query result:', data); // クエリ結果を確認
+    console.log('Query errors:', errors); // エラーがある場合に確認
+    console.log('Iot=',data)
+  }
 
   return (
     <main>

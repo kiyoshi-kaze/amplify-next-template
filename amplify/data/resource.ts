@@ -19,6 +19,13 @@ const schema = a.schema({
     Controller: a.string()
   }),
 
+  //新しいテーブル（IoTData）の設定を追加
+  IotData: a.customType({
+    Device: a.id().required(),
+    DeviceDatetime: a.string(),
+    Controller: a.string()
+  }),
+
   //step3にて追加。
   addPost: a
     .mutation()
@@ -78,6 +85,24 @@ const schema = a.schema({
         //entry: "./getPost.js",
       })
     ),
+
+  //新しいテーブル（IoTData）の設定を追加
+  listIotDataByController: a
+
+    .query()
+    .arguments({
+      Controller: a.string(),
+      //DeviceDatetime: a.string(), // DeviceDatetimeを追加
+    })
+    .returns(a.ref("IotData").array())
+    .authorization(allow => [allow.publicApiKey()])
+    .handler(
+      a.handler.custom({
+        dataSource: "IotDataTableDataSource",
+        entry: "./listIotDataByController.js",
+      })
+    ),
+
 
 });
 
