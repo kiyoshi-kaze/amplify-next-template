@@ -23,7 +23,8 @@ export default function App() {
 
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
   const [posts, setPosts] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
-  const [devices, setDevices] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
+  //const [devices, setDevices] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
+  const [division, setDevices] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
   const [Iotdatas, setIots] = useState<Array<Schema["IotData"]["type"]>>([]); //Postを追加。
 
 
@@ -128,21 +129,7 @@ export default function App() {
         ))}
       </ul>
 
-      <h1>My posts</h1>
-      <button onClick={addPost}>+ new post</button>
-      <ul>
-        {posts.map((post) => (
-          <li key={post.Device}>{post.Controller}</li>
-        ))}
-      </ul>
 
-      <h1>My lists</h1>
-      <button onClick={addPost}>+ new post</button>
-      <ul>
-        {devices.map((device) => (
-          <li key={device.Device}>{device.Controller}</li>
-        ))}
-      </ul>
 
 
 
