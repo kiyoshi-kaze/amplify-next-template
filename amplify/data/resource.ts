@@ -15,8 +15,8 @@ const schema = a.schema({
 
   //step1にて追加。
   Post: a.customType({
-    //Device: a.id().required(),    
-    Division: a.id().required(),
+    Device: a.id().required(),    
+    //Division: a.id().required(),
     Controller: a.string()
   }),
 

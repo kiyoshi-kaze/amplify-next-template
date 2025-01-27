@@ -17,9 +17,9 @@ const externalDataSourcesStack = backend.createStack("MyExternalDataSources");
 const externalTable = aws_dynamodb.Table.fromTableName(
   externalDataSourcesStack,
   "MyExternalPostTable",
-  //"DeviceTable",
+  "DeviceTable",
   //"IotData",
-  "DivisionTable",
+  //"DivisionTable",
 
 );
 
