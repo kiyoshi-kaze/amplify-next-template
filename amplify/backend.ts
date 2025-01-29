@@ -11,22 +11,23 @@ export const backend = defineBackend({
 });
 
 
+
 //step2にて追加。
 const externalDataSourcesStack = backend.createStack("MyExternalDataSources");
 
 const externalTable = aws_dynamodb.Table.fromTableName(
   externalDataSourcesStack,
   "MyExternalPostTable",
-  //"DeviceTable",
-  //"IotData",
-  "DivisionTable",
+  //"DeviceTable"
+  "IotData"
 
 );
 
 //新しいテーブル（IoTData）の設定を追加
-const iotDataTable = aws_dynamodb.Table.fromTableName(
+//const IotDataSourcesStack = backend.createStack("MyIotDataSources");
+const iotTable = aws_dynamodb.Table.fromTableName(
   externalDataSourcesStack,
-  "MyIotDataTable",
+  "MyIotPostTable",
   "IotData"
 );
 
@@ -51,10 +52,11 @@ const externalTableDS = backend.data.addDynamoDbDataSource(
 
 //新しいテーブル（IoTData）の設定を追加
 const iotDataTableDS = backend.data.addDynamoDbDataSource(
-  "IotDataTableDataSource",
-  iotDataTable
+  "IotPostTableDataSource",
+  iotTable
 );
 
+//ここからは共通。
 const dsRole = Role.fromRoleArn(
   externalDataSourcesStack,
   "DatasourceRole",
@@ -62,11 +64,11 @@ const dsRole = Role.fromRoleArn(
 )
 
 //新しいテーブル（IoTData）の設定を追加
-const iotDataRole = Role.fromRoleArn(
-  externalDataSourcesStack,
-  "IotDataRole",
-  iotDataTableDS.ds.serviceRoleArn ?? ''
-);
+//const iotDataRole = Role.fromRoleArn(
+  //externalDataSourcesStack,
+  //"IotDataRole",
+  //iotDataTableDS.ds.serviceRoleArn ?? ''
+//);
 
 
 const datasourceIamPolicy = new Policy(externalDataSourcesStack, "datasourceIamPolicy", {
@@ -85,4 +87,4 @@ const datasourceIamPolicy = new Policy(externalDataSourcesStack, "datasourceIamP
 });
 
 dsRole.attachInlinePolicy(datasourceIamPolicy);
-iotDataRole.attachInlinePolicy(datasourceIamPolicy);//新しいテーブル（IoTData）の設定を追加
+//iotDataRole.attachInlinePolicy(datasourceIamPolicy);//新しいテーブル（IoTData）の設定を追加

@@ -15,16 +15,17 @@ const schema = a.schema({
 
   //step1にて追加。
   Post: a.customType({
-    //Device: a.id().required(),    
-    Division: a.id().required(),
-    Controller: a.string()
+    Device: a.id().required(),
+    DeviceDatetime: a.string(),
+    Controller: a.string(),
+    //DeviceType: a.string(),//追加（セカンダリーキーにも使用）。
   }),
 
   //新しいテーブル（IoTData）の設定を追加
   IotData: a.customType({
     Device: a.id().required(),
     DeviceDatetime: a.string(),
-    Controller: a.string()
+    Controller: a.string(),
   }),
 
   //step3にて追加。
@@ -72,18 +73,22 @@ const schema = a.schema({
   //2025.1.23サポート様より提示。
   //Query の結果は複数件レスポンスされる可能性があるので、".returns(a.ref("Post").array())" のように
   //配列をレスポンスするスキーマを追加
-  listDeviceByController: a
+  listIot: a
     .query()
     .arguments({
       Controller: a.string(),
+      DeviceDatetime: a.string(), // DeviceDatetimeを追加
+      //DeviceType: a.string(),//DeviceTypeを追加。
     })
     .returns(a.ref("Post").array())
     .authorization(allow => [allow.publicApiKey()])
     .handler(
       a.handler.custom({
         dataSource: "ExternalPostTableDataSource",
-        entry: "./listDeviceByController.js",
-        //entry: "./getPost.js",
+        //entry: "./listDeviceByController.js",
+        //entry: "./listDeviceByControllerType.js",
+        entry: "./listIotDataByController.js",
+
       })
     ),
 
@@ -93,21 +98,19 @@ const schema = a.schema({
     .query()
     .arguments({
       Controller: a.string(),
-      //DeviceDatetime: a.string(), // DeviceDatetimeを追加
+      DeviceDatetime: a.string(), // DeviceDatetimeを追加
     })
     .returns(a.ref("IotData").array())
     .authorization(allow => [allow.publicApiKey()])
     .handler(
       a.handler.custom({
-        dataSource: "IotDataTableDataSource",
+        dataSource: "IotPostTableDataSource",
         entry: "./listIotDataByController.js",
       })
     ),
 
 
 });
-
-
 
 export type Schema = ClientSchema<typeof schema>;
 
