@@ -86,5 +86,6 @@ const datasourceIamPolicy = new Policy(externalDataSourcesStack, "datasourceIamP
   ],
 });
 
+
 dsRole.attachInlinePolicy(datasourceIamPolicy);
 //iotDataRole.attachInlinePolicy(datasourceIamPolicy);//新しいテーブル（IoTData）の設定を追加
