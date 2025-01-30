@@ -21,6 +21,7 @@ const schema = a.schema({
     //DeviceType: a.string(),//追加（セカンダリーキーにも使用）。
   }),
 
+
   //新しいテーブル（IoTData）の設定を追加
   IotData: a.customType({
     Device: a.id().required(),
@@ -70,7 +71,6 @@ const schema = a.schema({
       })
     ),
 
-
   //2025.1.23サポート様より提示。
   //Query の結果は複数件レスポンスされる可能性があるので、".returns(a.ref("Post").array())" のように
   //配列をレスポンスするスキーマを追加
@@ -86,13 +86,14 @@ const schema = a.schema({
     .handler(
       a.handler.custom({
         dataSource: "ExternalPostTableDataSource",
+        //dataSource: "IotPostTableDataSource",//★★
         entry: "./listIot.js",
+
       })
     ),
 
-  //新しいテーブル（IoTData）の設定を追加
+  //新しいテーブル（DeviceTableDeviceTable）の設定を追加
   listIotDataByController: a
-
     .query()
     .arguments({
       Controller: a.string(),
@@ -102,11 +103,11 @@ const schema = a.schema({
     .authorization(allow => [allow.publicApiKey()])
     .handler(
       a.handler.custom({
-        dataSource: "IotPostTableDataSource",
+        dataSource: "DeviceDataSource",//★★★
+        //dataSource: "ExternalPostTableDataSource",      
         entry: "./listIot.js",
       })
     ),
-
 
 });
 
