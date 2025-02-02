@@ -165,6 +165,25 @@ export default function App() {
       </ul>
 
 
+      <div>
+        <label>
+          StartDatetime:
+          <select value={startDatetime} onChange={handleStartDatetimeChange}>
+            <option value="2025-01-31 00:00:00+09:00">2025-01-31 00:00:00</option>
+            <option value="2025-02-01 00:00:00+09:00">2025-02-01 00:00:00</option>
+            {/* 他のオプションを追加 */}
+          </select>
+        </label>
+        <label>
+          EndDatetime:
+          <select value={endDatetime} onChange={handleEndDatetimeChange}>
+            <option value="2025-01-31 23:59:59+09:00">2025-01-31 23:59:59</option>
+            <option value="2025-02-01 23:59:59+09:00">2025-02-01 23:59:59</option>
+            {/* 他のオプションを追加 */}
+          </select>
+        </label>
+      </div>
+
 
       <div>
         🥳 App successfully hosted. Try creating a new todo.
