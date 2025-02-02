@@ -22,9 +22,9 @@ export default function App() {
   //const [Iotdatas, setIots] = useState<Array<Schema["IotData"]["type"]>>([]); //Postを追加。
 
 
-  // StartDatetimeとEndDatetimeを選択するためのステート
-  const [startDatetime, setStartDatetime] = useState("");
-  const [endDatetime, setEndDatetime] = useState("");
+  // StartDatetimeとEndDatetimeを選択するためのステート。useState()の中は初期値。
+  const [startDatetime, setStartDatetime] = useState("2025-01-31 00:00:00+09:00");
+  const [endDatetime, setEndDatetime] = useState("2025-01-31 23:59:59+09:00");
 
 
   interface Device {
@@ -174,7 +174,7 @@ export default function App() {
       <div>
         <label>
           StartDatetime:
-          <select value={startDatetime} onChange={handleStartDatetimeChange}>
+          <select value={startDatetime} onChange={handleStartDatetimeChange}> 
             <option value="2025-01-31 00:00:00+09:00">2025-01-31 00:00:00</option>
             <option value="2025-02-01 00:00:00+09:00">2025-02-01 00:00:00</option>
             {/* 他のオプションを追加 */}
