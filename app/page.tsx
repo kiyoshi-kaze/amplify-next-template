@@ -21,6 +21,12 @@ export default function App() {
   const [devices, setDevices] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
   //const [Iotdatas, setIots] = useState<Array<Schema["IotData"]["type"]>>([]); //Postを追加。
 
+
+  // StartDatetimeとEndDatetimeを選択するためのステート
+  const [startDatetime, setStartDatetime] = useState("");
+  const [endDatetime, setEndDatetime] = useState("");
+
+
   interface Device {
     Device: string;
     Controller: string;
@@ -120,6 +126,17 @@ export default function App() {
       console.error('予期しないエラー', error); // 予期しないエラーをログ出力
     }
   }
+
+
+  // リストボックスコンポーネントを追加
+  function handleStartDatetimeChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    setStartDatetime(event.target.value);
+  }
+
+  function handleEndDatetimeChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    setEndDatetime(event.target.value);
+  }
+
 
   return (
     <main>
