@@ -58,7 +58,8 @@ export default function App() {
     // クリーンアップ関数を返してサブスクリプションを解除
     return () => sub.unsubscribe();
 
-  }, []);
+  //}, []);
+  }, [startDatetime, endDatetime]);//★startDatetimeとendDatetimeが変更されたときにlistIot関数を呼び出す
 
   function createTodo() {
     client.models.Todo.create({
