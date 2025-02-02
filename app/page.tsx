@@ -92,7 +92,11 @@ export default function App() {
   //Iotのデータを抽出。
     async function listIot () {
 
+      console.log("StartDatetime=", startDatetime); // デバッグ用のログ出力
+      console.log("EndDatetime=", endDatetime); // デバッグ用のログ出力
+
       const { data, errors } = await client.queries.listIot({
+
         Controller: "Mutsu01",//Controllerが"Mutsu01"であるデータを抽出。
         //DeviceDatetime: "2024-06-30 23:28:28+09:00",
         //StartDatetime: "2025-01-31 00:00:00+09:00",//範囲検索
