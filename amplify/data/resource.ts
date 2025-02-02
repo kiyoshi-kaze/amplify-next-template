@@ -78,15 +78,15 @@ const schema = a.schema({
     .query()
     .arguments({
       Controller: a.string(),
-      DeviceDatetime: a.string(), // DeviceDatetimeを追加
-      //DeviceType: a.string(),//DeviceTypeを追加。
+      DeviceDatetime: a.string(),
+      StartDatetime: a.string(),//★範囲検索で使用するため、追加。
+      EndDatetime: a.string(),//★範囲検索で使用するため、追加。
     })
     .returns(a.ref("Post").array())
     .authorization(allow => [allow.publicApiKey()])
     .handler(
       a.handler.custom({
         dataSource: "ExternalPostTableDataSource",
-        //dataSource: "IotPostTableDataSource",//★★
         entry: "./listIot.js",
 
       })
@@ -97,7 +97,7 @@ const schema = a.schema({
     .query()
     .arguments({
       Controller: a.string(),
-      DeviceDatetime: a.string(), // DeviceDatetimeを追加
+      DeviceDatetime: a.string(),
     })
     .returns(a.ref("IotData").array())
     .authorization(allow => [allow.publicApiKey()])
