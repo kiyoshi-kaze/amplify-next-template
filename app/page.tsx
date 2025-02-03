@@ -10,6 +10,7 @@ import "@aws-amplify/ui-react/styles.css";
 
 import DatePicker from "react-datepicker";//インストール要。
 import "react-datepicker/dist/react-datepicker.css";
+import { format } from "date-fns";//フォーマット変換。インストール要。
 
 
 Amplify.configure(outputs);
@@ -98,8 +99,10 @@ export default function App() {
   //Iotのデータを抽出。
     async function listIot () {
 
-      const startDatetime = `${startDate} 00:00:00+09:00`;
-      const endDatetime = `${endDate} 23:59:59+09:00`;
+      //const startDatetime = `${startDate} 00:00:00+09:00`;
+      //const endDatetime = `${endDate} 23:59:59+09:00`;
+      const startDatetime = `${format(startDate, "yyyy-MM-dd")} 00:00:00+09:00`;
+      const endDatetime = `${format(endDate, "yyyy-MM-dd")} 23:59:59+09:00`;
 
       console.log("StartDatetime=", startDate); // デバッグ用のログ出力
       console.log("EndDatetime=", endDate); // デバッグ用のログ出力
