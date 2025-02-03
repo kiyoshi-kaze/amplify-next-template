@@ -8,6 +8,9 @@ import { Amplify } from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
 
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 
 Amplify.configure(outputs);
 
@@ -23,8 +26,10 @@ export default function App() {
 
 
   // StartDatetimeとEndDatetimeを選択するためのステート。useState()の中は初期値。
-  const [startDate, setStartDatetime] = useState("2025-01-31");
-  const [endDate, setEndDatetime] = useState("2025-01-31");
+  //const [startDate, setStartDatetime] = useState("2025-01-31");
+  //const [endDate, setEndDatetime] = useState("2025-01-31");
+  const [startDate, setStartDatetime] = useState(new Date("2025-01-31"));
+  const [endDate, setEndDatetime] = useState(new Date("2025-01-31"));
 
 
   interface Device {
@@ -139,13 +144,13 @@ export default function App() {
 
 
   // リストボックスコンポーネントを追加
-  function handleStartDatetimeChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    setStartDatetime(event.target.value);
-  }
+  //function handleStartDatetimeChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    //setStartDatetime(event.target.value);
+  //}
 
-  function handleEndDatetimeChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    setEndDatetime(event.target.value);
-  }
+  //function handleEndDatetimeChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    //setEndDatetime(event.target.value);
+  //}
 
 
   return (
@@ -178,19 +183,11 @@ export default function App() {
       <div>
         <label>
           StartDatetime:
-          <select value={startDate} onChange={handleStartDatetimeChange}> 
-            <option value="2025-01-31">2025-01-31</option>
-            <option value="2025-02-01">2025-02-01</option>
-            {/* 他のオプションを追加 */}
-          </select>
+          <DatePicker selected={startDate} onChange={(date: Date) => setStartDatetime(date)} />
         </label>
         <label>
           EndDatetime:
-          <select value={endDate} onChange={handleEndDatetimeChange}>
-            <option value="2025-01-31">2025-01-31</option>
-            <option value="2025-02-01">2025-02-01</option>
-            {/* 他のオプションを追加 */}
-          </select>
+          <DatePicker selected={endDate} onChange={(date: Date) => setEndDatetime(date)} />
         </label>
       </div>
 
