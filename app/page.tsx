@@ -23,8 +23,8 @@ export default function App() {
 
 
   // StartDatetimeとEndDatetimeを選択するためのステート。useState()の中は初期値。
-  const [startDatetime, setStartDatetime] = useState("2025-01-31 00:00:00+09:00");
-  const [endDatetime, setEndDatetime] = useState("2025-01-31 23:59:59+09:00");
+  const [startDate, setStartDatetime] = useState("2025-01-31");
+  const [endDate, setEndDatetime] = useState("2025-01-31");
 
 
   interface Device {
@@ -59,7 +59,7 @@ export default function App() {
     return () => sub.unsubscribe();
 
   //}, []);
-  }, [startDatetime, endDatetime]);//★startDatetimeとendDatetimeが変更されたときにlistIot関数を呼び出す
+  }, [startDate, endDate]);//★startDatetimeとendDatetimeが変更されたときにlistIot関数を呼び出す
 
   function createTodo() {
     client.models.Todo.create({
@@ -93,8 +93,11 @@ export default function App() {
   //Iotのデータを抽出。
     async function listIot () {
 
-      console.log("StartDatetime=", startDatetime); // デバッグ用のログ出力
-      console.log("EndDatetime=", endDatetime); // デバッグ用のログ出力
+      const startDatetime = `${startDate} 00:00:00+09:00`;
+      const endDatetime = `${endDate} 23:59:59+09:00`;
+
+      console.log("StartDatetime=", startDate); // デバッグ用のログ出力
+      console.log("EndDatetime=", endDate); // デバッグ用のログ出力
 
       const { data, errors } = await client.queries.listIot({
 
@@ -175,17 +178,17 @@ export default function App() {
       <div>
         <label>
           StartDatetime:
-          <select value={startDatetime} onChange={handleStartDatetimeChange}> 
-            <option value="2025-01-31 00:00:00+09:00">2025-01-31 00:00:00</option>
-            <option value="2025-02-01 00:00:00+09:00">2025-02-01 00:00:00</option>
+          <select value={startDate} onChange={handleStartDatetimeChange}> 
+            <option value="2025-01-31">2025-01-31</option>
+            <option value="2025-02-01">2025-02-01</option>
             {/* 他のオプションを追加 */}
           </select>
         </label>
         <label>
           EndDatetime:
-          <select value={endDatetime} onChange={handleEndDatetimeChange}>
-            <option value="2025-01-31 23:59:59+09:00">2025-01-31 23:59:59</option>
-            <option value="2025-02-01 23:59:59+09:00">2025-02-01 23:59:59</option>
+          <select value={endDate} onChange={handleEndDatetimeChange}>
+            <option value="2025-01-31">2025-01-31</option>
+            <option value="2025-02-01">2025-02-01</option>
             {/* 他のオプションを追加 */}
           </select>
         </label>
