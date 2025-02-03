@@ -8,7 +8,7 @@ import { Amplify } from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
 
-import DatePicker from "react-datepicker";
+import DatePicker from "react-datepicker";//インストール要。
 import "react-datepicker/dist/react-datepicker.css";
 
 
@@ -183,14 +183,13 @@ export default function App() {
       <div>
         <label>
           StartDatetime:
-          <DatePicker selected={startDate} onChange={(date: Date) => setStartDatetime(date)} />
+          <DatePicker selected={startDate} onChange={(date: Date | null) => setStartDatetime(date ? date : new Date())} />
         </label>
         <label>
           EndDatetime:
-          <DatePicker selected={endDate} onChange={(date: Date) => setEndDatetime(date)} />
+          <DatePicker selected={endDate} onChange={(date: Date | null) => setEndDatetime(date ? date : new Date())} />  
         </label>
       </div>
-
 
       <div>
         🥳 App successfully hosted. Try creating a new todo.
