@@ -29,8 +29,8 @@ export default function App() {
   // StartDatetimeとEndDatetimeを選択するためのステート。useState()の中は初期値。
   //const [startDate, setStartDatetime] = useState("2025-01-31");
   //const [endDate, setEndDatetime] = useState("2025-01-31");
-  const [startDate, setStartDatetime] = useState(new Date("2025-01-31"));
-  const [endDate, setEndDatetime] = useState(new Date("2025-01-31"));
+  const [startDate, setStartDatetime] = useState(new Date());//本日の日付をデフォルト表示。
+  const [endDate, setEndDatetime] = useState(new Date());//本日の日付をデフォルト表示。
 
 
   interface Device {
