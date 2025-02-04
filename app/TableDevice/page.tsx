@@ -23,15 +23,6 @@ export default function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
   const [posts, setPosts] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
   const [devices, setDevices] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
-  //const [Iotdatas, setIots] = useState<Array<Schema["IotData"]["type"]>>([]); //Postを追加。
-
-
-  // StartDatetimeとEndDatetimeを選択するためのステート。useState()の中は初期値。
-  //const [startDate, setStartDatetime] = useState("2025-01-31");
-  //const [endDate, setEndDatetime] = useState("2025-01-31");
-  const [startDate, setStartDatetime] = useState(new Date());//本日の日付をデフォルト表示。
-  const [endDate, setEndDatetime] = useState(new Date());//本日の日付をデフォルト表示。
-
 
   interface Device {
     Device: string;
@@ -39,17 +30,8 @@ export default function App() {
     DeviceType: string;
   }
 
-
-  function listTodos() {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
-  }
-
   useEffect(() => {
-    listTodos();
     getPost(); // Postの初期表示
-    listIot (); // Postの初期表示
     listIotDataByController (); // Postの初期表示
 
     //サブスクリプションの設定をuseEffect()の中に移動。
@@ -64,8 +46,7 @@ export default function App() {
     // クリーンアップ関数を返してサブスクリプションを解除
     return () => sub.unsubscribe();
 
-  //}, []);
-  }, [startDate, endDate]);//★startDatetimeとendDatetimeが変更されたときにlistIot関数を呼び出す
+  }, );
 
   function createTodo() {
     client.models.Todo.create({
@@ -96,29 +77,6 @@ export default function App() {
     }
   }
 
-  //Iotのデータを抽出。
-    async function listIot () {
-
-      //const startDatetime = `${startDate} 00:00:00+09:00`;
-      //const endDatetime = `${endDate} 23:59:59+09:00`;
-      const startDatetime = `${format(startDate, "yyyy-MM-dd")} 00:00:00+09:00`;
-      const endDatetime = `${format(endDate, "yyyy-MM-dd")} 23:59:59+09:00`;
-
-      console.log("StartDatetime=", startDate); // デバッグ用のログ出力
-      console.log("EndDatetime=", endDate); // デバッグ用のログ出力
-
-      const { data, errors } = await client.queries.listIot({
-
-        Controller: "Mutsu01",//Controllerが"Mutsu01"であるデータを抽出。
-        //DeviceDatetime: "2024-06-30 23:28:28+09:00",
-        //StartDatetime: "2025-01-31 00:00:00+09:00",//範囲検索
-        StartDatetime: startDatetime,//★修正
-        //EndDatetime: "2025-01-31 23:59:59+09:00",//範囲検索
-        EndDatetime: endDatetime,//★修正
-      });
-      console.log('listIot=',data)
-  
-    }
 
   //listIotByControllerを追記。
   async function listIotDataByController () {
@@ -144,16 +102,6 @@ export default function App() {
       console.error('予期しないエラー', error); // 予期しないエラーをログ出力
     }
   }
-
-
-  // リストボックスコンポーネントを追加
-  //function handleStartDatetimeChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    //setStartDatetime(event.target.value);
-  //}
-
-  //function handleEndDatetimeChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    //setEndDatetime(event.target.value);
-  //}
 
 
   return (
@@ -182,24 +130,6 @@ export default function App() {
         ))}
       </ul>
 
-      <div>
-        <label>
-          StartDatetime:
-          <DatePicker selected={startDate} onChange={(date: Date | null) => setStartDatetime(date ? date : new Date())} />
-        </label>
-        <label>
-          EndDatetime:
-          <DatePicker selected={endDate} onChange={(date: Date | null) => setEndDatetime(date ? date : new Date())} />  
-        </label>
-      </div>
-
-      <div>
-        🥳 App successfully hosted. Try creating a new todo.
-        <br />
-        <a href="https://docs.amplify.aws/nextjs/start/quickstart/nextjs-app-router-client-components/">
-          Review next steps of this tutorial.
-        </a>
-      </div>
     </main>
   );
 }
