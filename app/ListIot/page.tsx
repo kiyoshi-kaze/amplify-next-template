@@ -12,6 +12,9 @@ import DatePicker from "react-datepicker";//インストール要。
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";//フォーマット変換。インストール要。
 
+import React from 'react';
+import PieChartComponent from '../components/PieChartComponent';
+
 
 Amplify.configure(outputs);
 
@@ -92,6 +95,9 @@ export default function App() {
         </label>
       </div>
 
+      <PieChartComponent data={devices} />
+
     </main>
+
   );
 }
