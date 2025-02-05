@@ -13,7 +13,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";//フォーマット変換。インストール要。
 
 import React from 'react';
-import PieChartComponent from '../components/PieChartComponent';
+import PieChartComponent from '../components/PieChartComponent.js';
 
 
 Amplify.configure(outputs);
