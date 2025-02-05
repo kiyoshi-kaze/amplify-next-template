@@ -18,7 +18,8 @@ const schema = a.schema({
     Device: a.id().required(),
     DeviceDatetime: a.string(),
     Controller: a.string(),
-    //DeviceType: a.string(),//追加（セカンダリーキーにも使用）。
+    DeviceType: a.string(),
+    Division: a.string(),   
   }),
 
 
