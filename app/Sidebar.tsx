@@ -10,6 +10,7 @@ export default function Sidebar() {
         <li><Link href="/">トップ画面</Link></li>
         <li><Link href="/ListIot">ListIot</Link></li>
         <li><Link href="/TableDevice">TableDeviceページ</Link></li>
+        <li><Link href="/Map">Mapページ</Link></li>
       </ul>
     </div>
   );

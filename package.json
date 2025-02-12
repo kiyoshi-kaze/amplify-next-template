@@ -13,6 +13,8 @@
     "@types/react-datepicker": "^6.2.0",
     "aws-amplify": "^6.6.6",
     "date-fns": "^4.1.0",
+    "maplibre-gl": "^2.4.0",
+    "maplibre-gl-js-amplify": "^4.0.2",
     "next": "14.2.10",
     "react": "^18",
     "react-datepicker": "^8.0.0",
