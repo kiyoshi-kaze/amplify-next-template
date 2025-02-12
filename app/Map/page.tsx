@@ -1,4 +1,4 @@
-'use client'; // この指示を追加
+'use client';
 
 import { useEffect } from 'react';
 import maplibregl from 'maplibre-gl';
@@ -9,9 +9,55 @@ export default function Home() {
     async function initializeMap() {
       const map = new maplibregl.Map({
         container: 'map', // マップを描画するHTML要素またはそのID
-        style: 'https://demotiles.maplibre.org/style.json', // マップのスタイルURL
-        center: [-123.1187, 49.2819], // [経度, 緯度]
-        zoom: 11,
+        style: {
+          version: 8,
+          sources: {
+            'gsi-dem': {
+              type: 'raster-dem',
+              tiles: [
+                'https://cyberjapandata.gsi.go.jp/xyz/dem5a_png/{z}/{x}/{y}.png'
+              ],
+              tileSize: 256,
+              encoding: 'mapbox'
+            },
+            'gsi-map': {
+              type: 'raster',
+              tiles: [
+                'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'
+              ],
+              tileSize: 256
+            }
+          },
+          layers: [
+            {
+              id: 'gsi-map',
+              type: 'raster',
+              source: 'gsi-map',
+              minzoom: 0,
+              maxzoom: 18
+            },
+            {
+              id: 'gsi-dem',
+              type: 'hillshade',
+              source: 'gsi-dem',
+              minzoom: 0,
+              maxzoom: 18
+            }
+          ]
+        }, // 国土地理院の標準地図タイルと標高タイル
+        center: [140.303327, 35.353034], // むつざわ道の駅の経度と緯度
+        zoom: 16,
+      });
+
+      map.on('load', () => {
+        map.setTerrain({ source: 'gsi-dem', exaggeration: 1.5 });
+
+        map.addLayer({
+          id: 'hillshade',
+          type: 'hillshade',
+          source: 'gsi-dem',
+          layout: { visibility: 'visible' }
+        });
       });
     }
     initializeMap();
@@ -19,8 +65,9 @@ export default function Home() {
 
   return (
     <div>
-      <h1>Map Example</h1>
+      <h1>3D Map Example</h1>
       <div id="map" style={{ width: '100%', height: '500px' }}></div>
     </div>
   );
 }
+
