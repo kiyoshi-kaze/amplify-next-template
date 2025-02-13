@@ -1,30 +1,36 @@
-'use client';
+"use client";
+import { FC } from "react";
+import * as maplibregl from "maplibre-gl";
+import Map, { ViewState } from "react-map-gl/maplibre";
+import "maplibre-gl/dist/maplibre-gl.css";
 
-// pages/index.js
+const InitialViewState: Partial<ViewState> = {
+  longitude: 135.8,
+  latitude: 37.5,
+  zoom: 5,
+  pitch: 45, // マップの初期ピッチ (傾き)
+  bearing: 0, // マップの初期ベアリング (回転)
+};
 
-import { useEffect } from 'react';
-import maplibregl from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
+const MAX_PITCH = 85 as const; // マップの最大ピッチ角度
+const MAX_ZOOM = 15 as const;
+const MIN_ZOOM = 1 as const;
 
-const Map = () => {
-  useEffect(() => {
-    const map = new maplibregl.Map({
-      container: 'map',
-      style: 'https://maps.gsi.go.jp/vector/sprite/style.json', // 地理院地図のスタイル
-      center: [139.6917, 35.6895], // 初期表示の中心座標（東京の座標を使用）
-      zoom: 10, // 初期表示のズームレベル
-    });
-
-    return () => map.remove();
-  }, []);
-
+export const TerrainMap: FC = () => {
   return (
-    <div>
-      <div id="map" style={{ width: '100%', height: '100vh' }} />
+    <div style={{ width: "100vw", height: "100vh" }}>
+      <Map
+        mapLib={maplibregl}
+        mapStyle="https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json"
+        initialViewState={InitialViewState}
+        maxPitch={MAX_PITCH}
+        maxZoom={MAX_ZOOM}
+        minZoom={MIN_ZOOM}
+        attributionControl={true}
+      />
     </div>
   );
 };
 
-export default Map;
 
 
