@@ -1,73 +1,46 @@
 'use client';
 
+// pages/index.js
+
 import { useEffect } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-export default function Home() {
+const Map = () => {
   useEffect(() => {
-    async function initializeMap() {
-      const map = new maplibregl.Map({
-        container: 'map', // マップを描画するHTML要素またはそのID
-        style: {
-          version: 8,
-          sources: {
-            'gsi-dem': {
-              type: 'raster-dem',
-              tiles: [
-                'https://cyberjapandata.gsi.go.jp/xyz/dem5a_png/{z}/{x}/{y}.png'
-              ],
-              tileSize: 256,
-              encoding: 'mapbox'
-            },
-            'gsi-map': {
-              type: 'raster',
-              tiles: [
-                'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'
-              ],
-              tileSize: 256
-            }
-          },
-          layers: [
-            {
-              id: 'gsi-map',
-              type: 'raster',
-              source: 'gsi-map',
-              minzoom: 0,
-              maxzoom: 18
-            },
-            {
-              id: 'gsi-dem',
-              type: 'hillshade',
-              source: 'gsi-dem',
-              minzoom: 0,
-              maxzoom: 18
-            }
-          ]
-        }, // 国土地理院の標準地図タイルと標高タイル
-        center: [140.303, 35.353], // むつざわ道の駅の経度と緯度
-        zoom: 15,
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: 'https://maps.gsi.go.jp/vector/sprite/style.json', // 地理院地図のスタイル
+      center: [139.6917, 35.6895], // 初期表示の中心座標（東京の座標を使用）
+      zoom: 10, // 初期表示のズームレベル
+    });
+
+    // 地理院標高タイルを追加する
+    map.on('load', () => {
+      map.addSource('dem', {
+        type: 'raster-dem',
+        url: 'https://cyberjapandata.gsi.go.jp/xyz/dem5a_png/{z}/{x}/{y}.png',
       });
 
-      map.on('load', () => {
-        map.setTerrain({ source: 'gsi-dem', exaggeration: 1.5 });
+      map.setTerrain({ source: 'dem', exaggeration: 1.5 });
 
-        map.addLayer({
-          id: 'hillshade',
-          type: 'hillshade',
-          source: 'gsi-dem',
-          layout: { visibility: 'visible' }
-        });
+      // 3D効果を有効にする
+      map.addLayer({
+        id: 'hillshade',
+        source: 'dem',
+        type: 'hillshade',
       });
-    }
-    initializeMap();
+    });
+
+    return () => map.remove();
   }, []);
 
   return (
     <div>
-      <h1>3D Map Example</h1>
-      <div id="map" style={{ width: '100%', height: '500px' }}></div>
+      <div id="map" style={{ width: '100%', height: '100vh' }} />
     </div>
   );
-}
+};
+
+export default Map;
 
