@@ -48,10 +48,6 @@ const TerrainMap: FC = () => {
       bearing: InitialViewState.bearing
     });
 
-    // ナビゲーションコントロールを追加
-    const nav = new maplibregl.NavigationControl({});
-    map.addControl(nav, 'top-left');
-
     map.on('moveend', () => {
       const newViewState = {
         longitude: map.getCenter().lng,
