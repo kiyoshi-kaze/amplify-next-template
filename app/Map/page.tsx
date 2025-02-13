@@ -15,23 +15,6 @@ const Map = () => {
       zoom: 10, // 初期表示のズームレベル
     });
 
-    // 地理院標高タイルを追加する
-    map.on('load', () => {
-      map.addSource('dem', {
-        type: 'raster-dem',
-        url: 'https://cyberjapandata.gsi.go.jp/xyz/dem5a_png/{z}/{x}/{y}.png',
-      });
-
-      map.setTerrain({ source: 'dem', exaggeration: 1.5 });
-
-      // 3D効果を有効にする
-      map.addLayer({
-        id: 'hillshade',
-        source: 'dem',
-        type: 'hillshade',
-      });
-    });
-
     return () => map.remove();
   }, []);
 
@@ -43,4 +26,5 @@ const Map = () => {
 };
 
 export default Map;
+
 
