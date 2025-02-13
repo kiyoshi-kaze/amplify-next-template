@@ -1,3 +1,6 @@
+// https://zenn.dev/kikiki_kiki/articles/f60927e05e9c3f より
+
+
 "use client";
 import { FC } from "react";
 import * as maplibregl from "maplibre-gl";
@@ -16,7 +19,7 @@ const MAX_PITCH = 85 as const; // マップの最大ピッチ角度
 const MAX_ZOOM = 15 as const;
 const MIN_ZOOM = 1 as const;
 
-export const TerrainMap: FC = () => {
+const TerrainMap: FC = () => {
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
       <Map
@@ -31,6 +34,9 @@ export const TerrainMap: FC = () => {
     </div>
   );
 };
+
+export default TerrainMap;
+
 
 
 
