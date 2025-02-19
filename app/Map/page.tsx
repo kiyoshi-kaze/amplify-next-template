@@ -139,7 +139,7 @@ const TerrainMap: FC = () => {
   }, []);
 
   return (
-    <div ref={mapContainerRef} style={{ width: "100vw", height: "100vh", position: "relative" }} />
+    <div ref={mapContainerRef} style={{ width: "80vw", height: "100vh", position: "relative" }} />
   );
 };
 
