@@ -114,7 +114,9 @@ const TerrainMap: FC = () => {
 
       map.on('load', () => {
         // NavigationControlの追加
-        const navControl = new maplibregl.NavigationControl({});
+        const navControl = new maplibregl.NavigationControl({
+          visualizePitch: true // ピッチ（角度）を変更できるようにする
+        });
         map.addControl(navControl, "top-right");
 
         // 3D建物の追加
