@@ -1,24 +1,25 @@
+
 /*
-//ナビゲーションコントロール付き
+//https://zenn.dev/mapbox_japan/articles/21a276dbc52e7c
+//を改変。
 "use client";
 import { FC, useEffect, useRef } from "react";
 import * as maplibregl from "maplibre-gl";
 //import Map, { ViewState } from "react-map-gl/maplibre";
 import Map, { ViewState } from "react-map-gl";
 
-
 import "maplibre-gl/dist/maplibre-gl.css";
 
 const InitialViewState: Partial<ViewState> = {
-  longitude: 135.8,
-  latitude: 37.5,
-  zoom: 5,
-  pitch: 45, // マップの初期ピッチ (傾き)
-  bearing: 0, // マップの初期ベアリング (回転)
+  longitude: -87.61694,
+  latitude: 41.86625,
+  zoom: 15,
+  pitch: 40, // マップの初期ピッチ (傾き)
+  bearing: 20, // マップの初期ベアリング (回転)
 };
 
 const MAX_PITCH = 85 as const; // マップの最大ピッチ角度
-const MAX_ZOOM = 15 as const;
+const MAX_ZOOM = 30 as const;
 const MIN_ZOOM = 1 as const;
 
 const TerrainMap: FC = () => {
@@ -42,6 +43,24 @@ const TerrainMap: FC = () => {
         // NavigationControlの追加
         const navControl = new maplibregl.NavigationControl({});
         map.addControl(navControl, "top-right");
+
+        // 3D建物の追加
+        map.addSource("buildings", {
+          type: "geojson",
+          data: "https://docs.mapbox.com/mapbox-gl-js/assets/indoor-3d-map.geojson",
+        });
+
+        map.addLayer({
+          id: "3d-buildings",
+          source: "buildings",
+          type: "fill-extrusion",
+          paint: {
+            "fill-extrusion-color": "#aaa",
+            "fill-extrusion-height": ["get", "height"],
+            "fill-extrusion-base": ["get", "min_height"],
+            "fill-extrusion-opacity": 0.6,
+          },
+        });
       });
     }
   }, []);
@@ -54,8 +73,8 @@ const TerrainMap: FC = () => {
 export default TerrainMap;
 
 */
-
-//ナビゲーションコントロール付き
+//https://zenn.dev/mapbox_japan/articles/21a276dbc52e7c
+//を改変。
 "use client";
 import { FC, useEffect, useRef } from "react";
 import * as maplibregl from "maplibre-gl";
@@ -73,7 +92,7 @@ const InitialViewState: Partial<ViewState> = {
 };
 
 const MAX_PITCH = 85 as const; // マップの最大ピッチ角度
-const MAX_ZOOM = 15 as const;
+const MAX_ZOOM = 30 as const;
 const MIN_ZOOM = 1 as const;
 
 const TerrainMap: FC = () => {
