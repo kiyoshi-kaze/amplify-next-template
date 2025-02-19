@@ -1,48 +1,12 @@
-"use client";
-import { FC } from "react";
-import * as maplibregl from "maplibre-gl";
-import Map, { ViewState } from "react-map-gl";
-import "maplibre-gl/dist/maplibre-gl.css";
 
-const InitialViewState: Partial<ViewState> = {
-  longitude: 135.8,
-  latitude: 37.5,
-  zoom: 5,
-  pitch: 45,
-  bearing: 0,
-};
-
-const MAX_PITCH = 85 as const;
-const MAX_ZOOM = 15 as const;
-const MIN_ZOOM = 1 as const;
-
-const TerrainMap: FC = () => {
-  return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      <Map
-        //initialViewState={InitialViewState}
-        style={{ width: "100%", height: "100%" }}
-        mapStyle="https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json"
-        maxPitch={MAX_PITCH}
-        maxZoom={MAX_ZOOM}
-        minZoom={MIN_ZOOM}
-        attributionControl={true}
-      />
-    </div>
-  );
-};
-
-export default TerrainMap;
-
-
-
-
-/*
 //ナビゲーションコントロール付き
 "use client";
 import { FC, useEffect, useRef } from "react";
 import * as maplibregl from "maplibre-gl";
-import Map, { ViewState } from "react-map-gl/maplibre";
+//import Map, { ViewState } from "react-map-gl/maplibre";
+import Map, { ViewState } from "react-map-gl";
+
+
 import "maplibre-gl/dist/maplibre-gl.css";
 
 const InitialViewState: Partial<ViewState> = {
@@ -89,7 +53,7 @@ const TerrainMap: FC = () => {
 
 export default TerrainMap;
 
-*/
+
 
 
 

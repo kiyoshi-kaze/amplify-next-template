@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^6.5.5",
+    "@types/maplibre-gl": "^1.13.2",
     "@types/react-datepicker": "^6.2.0",
     "aws-amplify": "^6.6.6",
     "date-fns": "^4.1.0",
