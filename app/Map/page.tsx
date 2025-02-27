@@ -84,12 +84,30 @@ import Map, { ViewState } from "react-map-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 const InitialViewState: Partial<ViewState> = {
-  longitude: -87.61694,
-  latitude: 41.86625,
+  longitude: 140.302994,
+  latitude: 35.353503,
+
   zoom: 15,
   pitch: 40, // マップの初期ピッチ (傾き)
   bearing: 20, // マップの初期ベアリング (回転)
 };
+
+const buildingData = [
+
+  {
+    "type": "FeatureCollection",
+    "name": "polygon",
+    "features": [
+    { "type": "Feature", "id": "ef6512f46485e27963c248bcc945c3db", "properties": { "level": 1, "name": "outer-walls", "height": 40, "base_height": 0, "color": "grey" }, "geometry": { "type": "Polygon", "coordinates":
+      [ 
+        [
+          [140.30278407246294,35.3536506960797],[140.3028859586707,35.353561867136904],[140.30279109909793,35.35349309627546],[140.3029544683622,35.35335412164743],[140.30308270445295,35.35344868172962],[140.30303878798242,35.35349166354854],[140.30326539696347,35.353659292423814],[140.30329174684482,35.35364066701038],[140.3033163400674,35.35366359059552],[140.30334093328997,35.35364639790731],[140.30337079648882,35.35367218693828],[140.30334971658374,35.35368937962103],[140.3036044321032,35.35387993161025],[140.3035499756818,35.353928644076575],[140.30353592241175,35.35392148048041],[140.30349903257797,35.35395156757994],[140.30353943572925,35.35397878923173],[140.3034111996402,35.3540833775981],[140.30328472020983,35.35398308738647],[140.30331107009107,35.35396302932918],[140.3031933739545,35.35387706617017],[140.30314243085064,35.35392434591894],[140.30304757127618,35.35385270992512],[140.30311081099296,35.35380256469101],[140.30308270445295,35.35377964114534],[140.30301946473617,35.353828353672114],[140.30278407246294,35.35364783063146]
+        ]
+      ] } }
+    ]
+    }
+
+]
 
 const MAX_PITCH = 85 as const; // マップの最大ピッチ角度
 const MAX_ZOOM = 30 as const;
@@ -123,7 +141,7 @@ const TerrainMap: FC = () => {
         map.addSource("buildings", {
           type: "geojson",
           //data: "https://docs.mapbox.com/mapbox-gl-js/assets/indoor-3d-map.geojson",
-          data: "https://kokontouzai-map.s3.ap-northeast-1.amazonaws.com/mutsuzawa-polygon.geojson?response-content-disposition=inline&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDwaDmFwLW5vcnRoZWFzdC0xIkcwRQIhAOW%2FlxYsanvNa7ZtJIaJeybyChT0952leUMCgbFaUdygAiBTP4kz8djwIda5MAAfgRdqbVkL9AzR0CNHT%2F1oLq0ZqirLAwh2EAAaDDQ0MjA0MjUzMzUwMCIM%2FPcmQC8oDtGffyW3KqgDrinK0kHMTljNfwEJZ8BV6Ie2M2Q5rygM1Ed4aw09I%2BNlFpmeegRtTJLtG93y7i1xQuJAbkhr0nf%2B6abw0%2FbkoO6wwcm%2Bd8rRB0cf5X9bQgsLusBufycrITO1QJqXV5BKDEkurMacxQe49XShJkSPPrc67zX6vTWi%2BwTg1Cq3wgkKPbNfh0xe3xzAoLKfpwrKIqnqd2QNVTgA3EpatDCYCi5w3yHL%2FsZ%2B8yeAQDAdlsefg4m%2BGZIRSfIKz65HYf4L5OnBaJXFSs1SFX7qBFq%2BYaEruzjRTqrm%2F5WU3GOdMt%2BU330u42g%2BgKgJuW2IRx5GGjfdb49vh9cet4zJwaGrgRrXVjWlPkyaXUb3bo41SkZachznwSClF9smQ0Yg6wKDfejP8HV7k7%2Bn9irnAQxILloYUdh%2FVIfQjkCbUAUxKTZwJatDCmn7NKXikPb0EBM4BOIdiW8NMADBKNyWXCOEIekloujKov5vBqDIbov9XFx%2BelXnAl7mSfnepUH56iewU5IXI%2BdbZ1RSi9k0Y80ky9GnslT9YLjFLyfgujlfpGJtFXspr7id2zDosoG%2BBjrkAlQOHguKDggzTGya%2Bg0sb75K7JhKOknazj0YpFuOfzH0xJY8AWXC4Lynmi0%2FaNGDZEcTg5ixOnU2pAvzH%2FtTNCk5H%2FQIotrVDqFSjABAn%2B2oGzN%2FhACILRCd%2F9kIh%2BWnVCEvsA1DVdxVdOlDGLdlX1frQTw1%2F9enqZo7Nmg06oeQngviAR8lDZL5gd5dMbCWI1wkDWvtDrnROmci7ow6S9fpuEE%2Bfybe413LRf4yZ3oKxQNG3mG8dA9MUGIYTjNVuc4cHgoYvtuLzg3cmE23GEKYPSvXJO09YZzsEWFOxKxBjmwCgSMN0gB6zrMVoEhysrOUMRwAz1pIzdh7YOYG4RB1hgukKTWGE5aAGfUsD%2F08a65CEfp4q3GWLi1EVYfeKOEJqzxJzIencAsBg5PENoqN5nZRY%2BGMuzbNQHxxVBoebYYny1UQMWqfbW%2B5wmOOc6oJKZCYnyEBqgpdig3mcjds7Xpu&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAWN26JYZ6FUHTCPKF%2F20250227%2Fap-northeast-1%2Fs3%2Faws4_request&X-Amz-Date=20250227T123717Z&X-Amz-Expires=7200&X-Amz-SignedHeaders=host&X-Amz-Signature=b7506bd8ab8f8ded5a1b576164aa887a13212cd8f0956c2fb4ccba0da54dfabc",
+          data: buildingData,
         });
 
         map.addLayer({
