@@ -93,7 +93,7 @@ const InitialViewState: Partial<ViewState> = {
   bearing: 20, // マップの初期ベアリング (回転)
 };
 
-const buildingData = [
+const buildingData = 
 
   {
     "type": "FeatureCollection",
@@ -106,9 +106,9 @@ const buildingData = [
         ]
       ] } }
     ]
-    }
+  }
 
-]
+
 
 const MAX_PITCH = 85 as const; // マップの最大ピッチ角度
 const MAX_ZOOM = 30 as const;
