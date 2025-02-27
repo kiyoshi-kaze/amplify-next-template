@@ -72,6 +72,7 @@ const TerrainMap: FC = () => {
 
 export default TerrainMap;
 
+
 */
 //https://zenn.dev/mapbox_japan/articles/21a276dbc52e7c
 //を改変。
