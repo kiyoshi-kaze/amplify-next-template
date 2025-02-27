@@ -150,12 +150,26 @@ const TerrainMap: FC = () => {
           source: "buildings",
           type: "fill-extrusion",
           paint: {
-            "fill-extrusion-color": "#aaa",
+            //"fill-extrusion-color": "#aaa",
+            "fill-extrusion-color": "rgba(0, 0, 0, 0)",
             "fill-extrusion-height": ["get", "height"],
             "fill-extrusion-base": ["get", "min_height"],
             "fill-extrusion-opacity": 0.6,
           },
         });
+
+        //輪郭を追加。
+        map.addLayer({
+          id: "building-outline",
+          source: "buildings",
+          type: "line",
+          paint: {
+            "line-color": "#000000",
+            "line-width": 1,
+          },
+        });
+
+
       });
     }
   }, []);
