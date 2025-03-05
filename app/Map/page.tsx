@@ -144,50 +144,6 @@ const buildingData = {
         ]
       } 
     },
-    { 
-      "type": "Feature", 
-      "id": "plot1", 
-      "properties": { 
-        "name": "plot1", 
-        "height": 2, 
-        "base_height": 0, 
-        "color": "blue" 
-      }, 
-      "geometry": { 
-        "type": "Polygon", 
-        "coordinates": [
-          [
-            [140.302860, 35.353600],
-            [140.302900, 35.353580],
-            [140.302880, 35.353560],
-            [140.302860, 35.353580],
-            [140.302860, 35.353600]
-          ]
-        ]
-      } 
-    },
-    { 
-      "type": "Feature", 
-      "id": "plot2", 
-      "properties": { 
-        "name": "plot2", 
-        "height": 3, 
-        "base_height": 0, 
-        "color": "red" 
-      }, 
-      "geometry": { 
-        "type": "Polygon", 
-        "coordinates": [
-          [
-            [140.303050, 35.353400],
-            [140.303090, 35.353380],
-            [140.303070, 35.353360],
-            [140.303050, 35.353380],
-            [140.303050, 35.353400]
-          ]
-        ]
-      } 
-    }
   ]
 };
 
@@ -237,7 +193,7 @@ const TerrainMap: FC = () => {
             "fill-extrusion-color": "#aaa",
             "fill-extrusion-height": ["get", "height"],
             "fill-extrusion-base": ["get", "min_height"],
-            "fill-extrusion-opacity": 0.1,
+            "fill-extrusion-opacity": 0.6,
           },
         });
 
