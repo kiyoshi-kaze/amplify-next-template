@@ -105,7 +105,9 @@ const buildingData = {
         "name": "outer-walls", 
         "height": 6, 
         "base_height": 0, 
-        "color": "grey" 
+        "color": "transparent", 
+        "stroke": "black",
+        "stroke-width": 1
       }, 
       "geometry": { 
         "type": "Polygon", 
