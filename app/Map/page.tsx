@@ -152,7 +152,7 @@ const buildingData = {
         "color": "blue" 
       }, 
       "geometry": { 
-        "type": "Polygon", 
+        "type": "Point", 
         "coordinates": [
           [
             [140.302860, 35.353600],
@@ -174,7 +174,7 @@ const buildingData = {
         "color": "red" 
       }, 
       "geometry": { 
-        "type": "Polygon", 
+        "type": "Point", 
         "coordinates": [
           [
             [140.303050, 35.353400],
