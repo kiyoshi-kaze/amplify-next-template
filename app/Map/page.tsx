@@ -237,7 +237,7 @@ const TerrainMap: FC = () => {
             "fill-extrusion-color": "#aaa",
             "fill-extrusion-height": ["get", "height"],
             "fill-extrusion-base": ["get", "min_height"],
-            "fill-extrusion-opacity": 0.6,
+            "fill-extrusion-opacity": 0.1,
           },
         });
 
