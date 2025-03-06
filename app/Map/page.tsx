@@ -158,6 +158,7 @@ const InitialViewState: Partial<ViewState> = {
   bearing: 20, // マップの初期ベアリング (回転)
 };
 
+
 const buildingData = {
 
   "type": "FeatureCollection",
