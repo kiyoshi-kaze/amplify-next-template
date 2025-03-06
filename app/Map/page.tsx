@@ -1,81 +1,6 @@
 
+
 /*
-//https://zenn.dev/mapbox_japan/articles/21a276dbc52e7c
-//を改変。
-"use client";
-import { FC, useEffect, useRef } from "react";
-import * as maplibregl from "maplibre-gl";
-//import Map, { ViewState } from "react-map-gl/maplibre";
-import Map, { ViewState } from "react-map-gl";
-
-import "maplibre-gl/dist/maplibre-gl.css";
-
-const InitialViewState: Partial<ViewState> = {
-  longitude: -87.61694,
-  latitude: 41.86625,
-  zoom: 15,
-  pitch: 40, // マップの初期ピッチ (傾き)
-  bearing: 20, // マップの初期ベアリング (回転)
-};
-
-const MAX_PITCH = 85 as const; // マップの最大ピッチ角度
-const MAX_ZOOM = 30 as const;
-const MIN_ZOOM = 1 as const;
-
-const TerrainMap: FC = () => {
-  const mapContainerRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (mapContainerRef.current) {
-      const map = new maplibregl.Map({
-        container: mapContainerRef.current,
-        style: "https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json",
-        center: [InitialViewState.longitude!, InitialViewState.latitude!],
-        zoom: InitialViewState.zoom,
-        pitch: InitialViewState.pitch,
-        bearing: InitialViewState.bearing,
-        maxPitch: MAX_PITCH,
-        maxZoom: MAX_ZOOM,
-        minZoom: MIN_ZOOM,
-      });
-
-      map.on('load', () => {
-        // NavigationControlの追加
-        const navControl = new maplibregl.NavigationControl({});
-        map.addControl(navControl, "top-right");
-
-        // 3D建物の追加
-        map.addSource("buildings", {
-          type: "geojson",
-          data: "https://docs.mapbox.com/mapbox-gl-js/assets/indoor-3d-map.geojson",
-        });
-
-        map.addLayer({
-          id: "3d-buildings",
-          source: "buildings",
-          type: "fill-extrusion",
-          paint: {
-            "fill-extrusion-color": "#aaa",
-            "fill-extrusion-height": ["get", "height"],
-            "fill-extrusion-base": ["get", "min_height"],
-            "fill-extrusion-opacity": 0.6,
-          },
-        });
-      });
-    }
-  }, []);
-
-  return (
-    <div ref={mapContainerRef} style={{ width: "100vw", height: "100vh", position: "relative" }} />
-  );
-};
-
-export default TerrainMap;
-
-
-*/
-//https://zenn.dev/mapbox_japan/articles/21a276dbc52e7c
-//を改変。
 "use client";
 import { FC, useEffect, useRef } from "react";
 import * as maplibregl from "maplibre-gl";
@@ -94,6 +19,10 @@ const InitialViewState: Partial<ViewState> = {
 };
 
 const buildingData = {
+
+
+
+
   "type": "FeatureCollection",
   "name": "polygon",
   "features": [
@@ -144,16 +73,7 @@ const buildingData = {
         ]
       } 
     },
-
-    {
-      'type': 'Feature',
-      'geometry': {
-          'type': 'Point',
-          'coordinates': [140.30278407246294,35.35364783063146]
-      }
-    },
-
-  ]
+  ] 
 };
 
 
@@ -217,7 +137,119 @@ const TerrainMap: FC = () => {
 };
 
 export default TerrainMap;
+*/
 
+
+
+"use client";
+import { FC, useEffect, useRef } from "react";
+import * as maplibregl from "maplibre-gl";
+//import Map, { ViewState } from "react-map-gl/maplibre";
+import Map, { ViewState } from "react-map-gl";
+
+import "maplibre-gl/dist/maplibre-gl.css";
+
+const InitialViewState: Partial<ViewState> = {
+  longitude: 140.302994,
+  latitude: 35.353503,
+
+  zoom: 15,
+  pitch: 40, // マップの初期ピッチ (傾き)
+  bearing: 20, // マップの初期ベアリング (回転)
+};
+
+const buildingData = {
+
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [140.302994, 35.353503]
+      },
+      "properties": {
+        "name": "Store 1",
+        "height": 30 // 地上からの高さ（メートル単位）
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [139.7742, 35.6812]
+      },
+      "properties": {
+        "name": "Store 2",
+        "height": 45 // 地上からの高さ（メートル単位）
+      }
+    }
+  ]
+
+
+};
+
+
+
+
+const MAX_PITCH = 85 as const; // マップの最大ピッチ角度
+const MAX_ZOOM = 30 as const;
+const MIN_ZOOM = 1 as const;
+
+const TerrainMap: FC = () => {
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (mapContainerRef.current) {
+      const map = new maplibregl.Map({
+        container: mapContainerRef.current,
+        style: "https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json",
+        center: [InitialViewState.longitude!, InitialViewState.latitude!],
+        zoom: InitialViewState.zoom,
+        pitch: InitialViewState.pitch,
+        bearing: InitialViewState.bearing,
+        maxPitch: MAX_PITCH,
+        maxZoom: MAX_ZOOM,
+        minZoom: MIN_ZOOM,
+      });
+
+      map.on('load', () => {
+        // NavigationControlの追加
+        const navControl = new maplibregl.NavigationControl({
+          visualizePitch: true // ピッチ（角度）を変更できるようにする
+        });
+        map.addControl(navControl, "top-right");
+
+        // 3D建物の追加
+        map.addSource("buildings", {
+          type: "geojson",
+          //data: "https://docs.mapbox.com/mapbox-gl-js/assets/indoor-3d-map.geojson",
+          data: buildingData,
+        });
+
+        map.addLayer({
+          id: "3d-buildings",
+          source: "buildings",
+          type: "fill-extrusion",
+          paint: {
+            "fill-extrusion-color": "#aaa",
+            "fill-extrusion-height": ["get", "height"],
+            "fill-extrusion-base": ["get", "min_height"],
+            "fill-extrusion-opacity": 0.6,
+          },
+        });
+
+
+      });
+    }
+  }, []);
+
+  return (
+    <div ref={mapContainerRef} style={{ width: "80vw", height: "100vh", position: "relative" }} />
+  );
+};
+
+export default TerrainMap;
 
 
 
