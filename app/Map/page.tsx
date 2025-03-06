@@ -144,7 +144,6 @@ export default TerrainMap;
 "use client";
 import { FC, useEffect, useRef } from "react";
 import * as maplibregl from "maplibre-gl";
-//import Map, { ViewState } from "react-map-gl/maplibre";
 import Map, { ViewState } from "react-map-gl";
 
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -152,15 +151,12 @@ import "maplibre-gl/dist/maplibre-gl.css";
 const InitialViewState: Partial<ViewState> = {
   longitude: 140.302994,
   latitude: 35.353503,
-
   zoom: 15,
   pitch: 40, // マップの初期ピッチ (傾き)
   bearing: 20, // マップの初期ベアリング (回転)
 };
 
-
 const buildingData = {
-
   "type": "FeatureCollection",
   "features": [
     {
@@ -186,12 +182,7 @@ const buildingData = {
       }
     }
   ]
-
-
 };
-
-
-
 
 const MAX_PITCH = 85 as const; // マップの最大ピッチ角度
 const MAX_ZOOM = 30 as const;
@@ -224,7 +215,6 @@ const TerrainMap: FC = () => {
         // 3D建物の追加
         map.addSource("buildings", {
           type: "geojson",
-          //data: "https://docs.mapbox.com/mapbox-gl-js/assets/indoor-3d-map.geojson",
           data: buildingData,
         });
 
@@ -235,12 +225,10 @@ const TerrainMap: FC = () => {
           paint: {
             "fill-extrusion-color": "#aaa",
             "fill-extrusion-height": ["get", "height"],
-            "fill-extrusion-base": ["get", "min_height"],
+            "fill-extrusion-base": 0, // またはデフォルト値を設定
             "fill-extrusion-opacity": 0.6,
           },
         });
-
-
       });
     }
   }, []);
@@ -251,9 +239,6 @@ const TerrainMap: FC = () => {
 };
 
 export default TerrainMap;
-
-
-
 
 
 
