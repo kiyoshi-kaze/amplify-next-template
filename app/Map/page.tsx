@@ -144,6 +144,15 @@ const buildingData = {
         ]
       } 
     },
+
+    {
+      'type': 'Feature',
+      'geometry': {
+          'type': 'Point',
+          'coordinates': [140.30278407246294,35.35364783063146]
+      }
+    },
+
   ]
 };
 
