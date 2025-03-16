@@ -227,36 +227,19 @@ const TerrainMap: FC = () => {
           },
         });
 
-        // ポップアップを作成
-        const popup = new maplibregl.Popup({
-          closeButton: true,
-          closeOnClick: false,
-        });
-
-        // クリックイベントの設定
-        map.on("click", "3d-buildings", (e) => {
-          // GeoJSONのプロパティを取得
-          const properties = e.features?.[0].properties;
-
-          if (properties) {
-            const htmlContent = `
-              <strong>建物情報</strong><br>
-              Name: ${properties.name || "N/A"}<br>
-              Height: ${properties.height || "N/A"}m
-            `;
-
-            // ポップアップにHTMLを設定し、クリックされた位置に表示
-            popup.setLngLat(e.lngLat).setHTML(htmlContent).addTo(map);
-          }
-        });
-
-        // マウスホバー（オプションで追加可能）
-        map.on("mouseenter", "3d-buildings", () => {
+        // マウスホバー時のイベントを設定
+        map.on("mouseenter", "3d-buildings", (e) => {
           map.getCanvas().style.cursor = "pointer"; // カーソル変更
+
+          // レイヤーの色を変更
+          map.setPaintProperty("3d-buildings", "fill-extrusion-color", "#ff0000");
         });
 
         map.on("mouseleave", "3d-buildings", () => {
           map.getCanvas().style.cursor = ""; // カーソルを元に戻す
+
+          // レイヤーの色を元に戻す
+          map.setPaintProperty("3d-buildings", "fill-extrusion-color", "#aaa");
         });
       });
     }
@@ -271,3 +254,4 @@ const TerrainMap: FC = () => {
 };
 
 export default TerrainMap;
+
