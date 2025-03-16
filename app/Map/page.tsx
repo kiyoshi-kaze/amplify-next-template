@@ -145,16 +145,15 @@ import * as maplibregl from "maplibre-gl";
 import * as THREE from "three";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-// 初期の地図の設定
 const InitialViewState = {
   longitude: 140.302994,
   latitude: 35.353503,
   zoom: 15,
-  pitch: 40, // マップの初期ピッチ (傾き)
-  bearing: 20, // マップの初期ベアリング (回転)
+  pitch: 40,
+  bearing: 20,
 };
 
-const MAX_PITCH = 85 as const; // マップの最大ピッチ角度
+const MAX_PITCH = 85 as const;
 const MAX_ZOOM = 30 as const;
 const MIN_ZOOM = 1 as const;
 
@@ -163,7 +162,6 @@ const TerrainMap: FC = () => {
 
   useEffect(() => {
     if (mapContainerRef.current) {
-      // MapLibreマップの初期化
       const map = new maplibregl.Map({
         container: mapContainerRef.current,
         style: "https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json",
@@ -177,11 +175,13 @@ const TerrainMap: FC = () => {
       });
 
       map.on("load", () => {
-        // ナビゲーションコントロールを追加
-        const navControl = new maplibregl.NavigationControl({ visualizePitch: true });
+        const navControl = new maplibregl.NavigationControl({
+          showZoom: true,
+          showCompass: true,
+          visualizePitch: true,
+        });
         map.addControl(navControl, "top-right");
 
-        // Three.jsのセットアップ
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(
           75,
@@ -193,38 +193,41 @@ const TerrainMap: FC = () => {
         renderer.setSize(map.getCanvas().clientWidth, map.getCanvas().clientHeight);
         map.getCanvasContainer().appendChild(renderer.domElement);
 
-        // Three.jsのカメラ初期位置
-        camera.position.set(0, 0, 5);
+        // 緯度経度をThree.js座標に変換する関数
+        function lngLatToVector3(lng: number, lat: number, altitude: number = 0): THREE.Vector3 {
+          const R = 6378137; // 地球の半径（メートル単位）
+          const x = (lng * Math.PI * R) / 180;
+          const y = Math.log(Math.tan((90 + lat) * Math.PI / 360)) * R;
+          return new THREE.Vector3(x, altitude, y); // altitudeは高さ
+        }
 
-        // 立方体の作成
-        const geometry = new THREE.BoxGeometry(1, 1, 1); // 幅、高さ、奥行き
-        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // 緑色のマテリアル
+        const geometry = new THREE.BoxGeometry(1000, 1000, 1000);
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
         const cube = new THREE.Mesh(geometry, material);
+        const position = lngLatToVector3(140.302994, 35.353503); // 緯度経度の変換
+        cube.position.set(position.x, position.y, position.z); // 位置を設定
         scene.add(cube);
 
-        // アニメーション関数
         const animate = () => {
           requestAnimationFrame(animate);
-
-          // 立方体を回転
           cube.rotation.x += 0.01;
           cube.rotation.y += 0.01;
-
-          // レンダリング
           renderer.render(scene, camera);
         };
         animate();
+
+        map.on("move", () => {
+          const center = map.getCenter();
+          const zoom = map.getZoom();
+          camera.position.set(center.lng, zoom * 1000, center.lat);
+        });
       });
     }
   }, []);
 
   return (
-    <div
-      ref={mapContainerRef}
-      style={{ width: "80vw", height: "100vh", position: "relative" }}
-    />
+    <div ref={mapContainerRef} style={{ width: "80vw", height: "100vh" }} />
   );
 };
 
 export default TerrainMap;
-
