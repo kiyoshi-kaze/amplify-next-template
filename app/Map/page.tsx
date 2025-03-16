@@ -227,40 +227,17 @@ const TerrainMap: FC = () => {
           },
         });
 
-        // Popupの作成
+        // 常に表示されるポップアップを作成
         const popup = new maplibregl.Popup({
           closeButton: false,
           closeOnClick: false,
         });
 
-        // マウスホバー時のイベントにポップアップを追加
-        map.on("mouseenter", "3d-buildings", (e) => {
-          map.getCanvas().style.cursor = "pointer"; // カーソルをポインターに変更
-
-          // featuresが存在するか確認
-          if (e.features && e.features.length > 0) {
-            const coordinates = e.lngLat;
-            const buildingName = e.features[0]?.properties?.name || "建物名不明";
-
-            popup
-              .setLngLat(coordinates)
-              .setHTML(`<strong>${buildingName}</strong>`)
-              .addTo(map);
-
-            // レイヤーの色を変更
-            map.setPaintProperty("3d-buildings", "fill-extrusion-color", "#ff0000");
-          }
-        });
-
-        map.on("mouseleave", "3d-buildings", () => {
-          map.getCanvas().style.cursor = ""; // カーソルを元に戻す
-
-          // ポップアップを削除
-          popup.remove();
-
-          // レイヤーの色を元に戻す
-          map.setPaintProperty("3d-buildings", "fill-extrusion-color", "#aaa");
-        });
+        // ポップアップの初期位置と内容を設定
+        popup
+          .setLngLat([140.302994, 35.353503]) // 任意の座標を設定
+          .setHTML("<strong>outer-walls</strong>")
+          .addTo(map);
       });
     }
   }, []);
@@ -274,6 +251,7 @@ const TerrainMap: FC = () => {
 };
 
 export default TerrainMap;
+
 
 
 
