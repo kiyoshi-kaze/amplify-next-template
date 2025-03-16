@@ -233,6 +233,7 @@ const TerrainMap: FC = () => {
     }
   }, []);
 
+  
   return (
     <div ref={mapContainerRef} style={{ width: "80vw", height: "100vh", position: "relative" }} />
   );
