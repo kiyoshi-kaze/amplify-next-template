@@ -142,7 +142,6 @@ export default TerrainMap;
 "use client";
 import { FC, useEffect, useRef } from "react";
 import * as maplibregl from "maplibre-gl";
-import * as THREE from "three";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 const InitialViewState = {
@@ -153,9 +152,37 @@ const InitialViewState = {
   bearing: 20,
 };
 
-const MAX_PITCH = 85 as const;
-const MAX_ZOOM = 30 as const;
-const MIN_ZOOM = 1 as const;
+const buildingData = {
+  type: "FeatureCollection",
+  features: [
+    {
+      type: "Feature",
+      properties: {
+        level: 1,
+        name: "outer-walls",
+        height: 6,
+        base_height: 0,
+      },
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [140.30278407246294, 35.3536506960797],
+            [140.3028859586707, 35.353561867136904],
+            [140.30279109909793, 35.35349309627546],
+            [140.3029544683622, 35.35335412164743],
+            [140.30308270445295, 35.35344868172962],
+            [140.30278407246294, 35.3536506960797],
+          ],
+        ],
+      },
+    },
+  ],
+};
+
+const MAX_PITCH = 85;
+const MAX_ZOOM = 30;
+const MIN_ZOOM = 1;
 
 const TerrainMap: FC = () => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -175,58 +202,71 @@ const TerrainMap: FC = () => {
       });
 
       map.on("load", () => {
+        // NavigationControlを追加
         const navControl = new maplibregl.NavigationControl({
-          showZoom: true,
-          showCompass: true,
           visualizePitch: true,
         });
         map.addControl(navControl, "top-right");
 
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(
-          75,
-          window.innerWidth / window.innerHeight,
-          0.1,
-          1000
-        );
-        const renderer = new THREE.WebGLRenderer({ alpha: true });
-        renderer.setSize(map.getCanvas().clientWidth, map.getCanvas().clientHeight);
-        map.getCanvasContainer().appendChild(renderer.domElement);
+        // GeoJSONデータをソースに追加
+        map.addSource("buildings", {
+          type: "geojson",
+          data: buildingData,
+        });
 
-        // 緯度経度をThree.js座標に変換する関数
-        function lngLatToVector3(lng: number, lat: number, altitude: number = 0): THREE.Vector3 {
-          const R = 6378137; // 地球の半径（メートル単位）
-          const x = (lng * Math.PI * R) / 180;
-          const y = Math.log(Math.tan((90 + lat) * Math.PI / 360)) * R;
-          return new THREE.Vector3(x, altitude, y); // altitudeは高さ
-        }
+        // fill-extrusionレイヤーを追加
+        map.addLayer({
+          id: "3d-buildings",
+          source: "buildings",
+          type: "fill-extrusion",
+          paint: {
+            "fill-extrusion-color": "#aaa",
+            "fill-extrusion-height": ["get", "height"],
+            "fill-extrusion-base": ["get", "base_height"],
+            "fill-extrusion-opacity": 0.6,
+          },
+        });
 
-        const geometry = new THREE.BoxGeometry(1000, 1000, 1000);
-        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-        const cube = new THREE.Mesh(geometry, material);
-        const position = lngLatToVector3(140.302994, 35.353503); // 緯度経度の変換
-        cube.position.set(position.x, position.y, position.z); // 位置を設定
-        scene.add(cube);
+        // ポップアップを作成
+        const popup = new maplibregl.Popup({
+          closeButton: true,
+          closeOnClick: false,
+        });
 
-        const animate = () => {
-          requestAnimationFrame(animate);
-          cube.rotation.x += 0.01;
-          cube.rotation.y += 0.01;
-          renderer.render(scene, camera);
-        };
-        animate();
+        // クリックイベントの設定
+        map.on("click", "3d-buildings", (e) => {
+          // GeoJSONのプロパティを取得
+          const properties = e.features?.[0].properties;
 
-        map.on("move", () => {
-          const center = map.getCenter();
-          const zoom = map.getZoom();
-          camera.position.set(center.lng, zoom * 1000, center.lat);
+          if (properties) {
+            const htmlContent = `
+              <strong>建物情報</strong><br>
+              Name: ${properties.name || "N/A"}<br>
+              Height: ${properties.height || "N/A"}m
+            `;
+
+            // ポップアップにHTMLを設定し、クリックされた位置に表示
+            popup.setLngLat(e.lngLat).setHTML(htmlContent).addTo(map);
+          }
+        });
+
+        // マウスホバー（オプションで追加可能）
+        map.on("mouseenter", "3d-buildings", () => {
+          map.getCanvas().style.cursor = "pointer"; // カーソル変更
+        });
+
+        map.on("mouseleave", "3d-buildings", () => {
+          map.getCanvas().style.cursor = ""; // カーソルを元に戻す
         });
       });
     }
   }, []);
 
   return (
-    <div ref={mapContainerRef} style={{ width: "80vw", height: "100vh" }} />
+    <div
+      ref={mapContainerRef}
+      style={{ width: "80vw", height: "100vh", position: "relative" }}
+    />
   );
 };
 
