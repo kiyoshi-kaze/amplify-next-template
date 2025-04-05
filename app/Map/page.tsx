@@ -114,19 +114,6 @@ import { FC, useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import { generateClient } from "aws-amplify/data";
-import type { Schema } from "@/amplify/data/resource";
-import { Amplify } from "aws-amplify";
-import outputs from "@/amplify_outputs.json";
-import "@aws-amplify/ui-react/styles.css";
-
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { format, parseISO } from "date-fns";
-
-
-const client = generateClient<Schema>();
-
 const InitialViewState = {
   longitude: 140.302994,
   latitude: 35.353503,
@@ -141,74 +128,71 @@ const MIN_ZOOM = 1 as const;
 
 const TerrainMap: FC = () => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<maplibregl.Map | null>(null); // Mapインスタンスを保持するRefを追加
   const [geojsonData, setGeojsonData] = useState<
     Array<{ Division: string; DivisionGeojson: string }>
   >([]);
 
-  // listPostからデータを取得
-  const listPost = async () => {
-    const { data } = await client.queries.listDivision({
-      Controller: "Mutsu01",
+  useEffect(() => {
+    if (!mapContainerRef.current || mapRef.current) return;
+
+    const map = new maplibregl.Map({
+      container: mapContainerRef.current,
+      style:
+        "https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json",
+      center: [InitialViewState.longitude, InitialViewState.latitude],
+      zoom: InitialViewState.zoom,
+      pitch: InitialViewState.pitch,
+      bearing: InitialViewState.bearing,
+      maxPitch: MAX_PITCH,
+      maxZoom: MAX_ZOOM,
+      minZoom: MIN_ZOOM,
     });
-    console.log("listDivision=", data);
-    if (data) {
-      setGeojsonData(
-        data as Array<{ Division: string; DivisionGeojson: string }>
-      );
-    }
-  };
+
+    map.on("load", () => {
+      const navControl = new maplibregl.NavigationControl({
+        visualizePitch: true,
+      });
+      map.addControl(navControl, "top-right");
+    });
+
+    mapRef.current = map; // MapインスタンスをRefに保存
+
+    return () => {
+      map.remove(); // コンポーネントのアンマウント時にリソースを解放
+    };
+  }, []);
 
   useEffect(() => {
-    listPost(); // コンポーネントのマウント時にデータを取得
+    if (!mapRef.current) return; // Mapインスタンスが存在しない場合は終了
 
-    if (mapContainerRef.current) {
-      const map = new maplibregl.Map({
-        container: mapContainerRef.current,
-        style:
-          "https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json",
-        center: [InitialViewState.longitude, InitialViewState.latitude],
-        zoom: InitialViewState.zoom,
-        pitch: InitialViewState.pitch,
-        bearing: InitialViewState.bearing,
-        maxPitch: MAX_PITCH,
-        maxZoom: MAX_ZOOM,
-        minZoom: MIN_ZOOM,
-      });
+    const map = mapRef.current; // RefからMapインスタンスを取得
 
-      map.on("load", () => {
-        const navControl = new maplibregl.NavigationControl({
-          visualizePitch: true,
+    geojsonData.forEach((entry, index) => {
+      try {
+        const geojson = JSON.parse(entry.DivisionGeojson);
+
+        map.addSource(`division-${index}`, {
+          type: "geojson",
+          data: geojson,
         });
-        map.addControl(navControl, "top-right");
 
-        // geojsonDataを使用してソースとレイヤーを追加
-        geojsonData.forEach((entry, index) => {
-          try {
-            const geojson = JSON.parse(entry.DivisionGeojson); // JSON文字列をパース
-
-            map.addSource(`division-${index}`, {
-              type: "geojson",
-              data: geojson,
-            });
-
-            map.addLayer({
-              id: `3d-buildings-${index}`,
-              source: `division-${index}`,
-              type: "fill-extrusion",
-              paint: {
-                "fill-extrusion-color": "#aaa",
-                "fill-extrusion-height": ["get", "height"],
-                "fill-extrusion-base": ["get", "base_height"],
-                "fill-extrusion-opacity": 0.1,
-              },
-            });
-          } catch (error) {
-            console.error(`Error parsing GeoJSON for division-${index}:`, error);
-          }
+        map.addLayer({
+          id: `3d-buildings-${index}`,
+          source: `division-${index}`,
+          type: "fill-extrusion",
+          paint: {
+            "fill-extrusion-color": "#aaa",
+            "fill-extrusion-height": ["get", "height"],
+            "fill-extrusion-base": ["get", "base_height"],
+            "fill-extrusion-opacity": 0.1,
+          },
         });
-      });
-    }
-  }, [geojsonData]); // geojsonDataの変化を監視
+      } catch (error) {
+        console.error(`Error parsing GeoJSON for division-${index}:`, error);
+      }
+    });
+  }, [geojsonData]);
 
   return (
     <div
