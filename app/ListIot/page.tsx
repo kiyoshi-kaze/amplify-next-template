@@ -3,35 +3,44 @@
 import { useState, useEffect } from "react";
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "@/amplify/data/resource";
-//import "./../app/app.css";
 import { Amplify } from "aws-amplify";
 import outputs from "@/amplify_outputs.json";
 import "@aws-amplify/ui-react/styles.css";
 
-import DatePicker from "react-datepicker";//インストール要。
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format } from "date-fns";//フォーマット変換。インストール要。
+import { format, parseISO } from "date-fns";
 
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 Amplify.configure(outputs);
 
 const client = generateClient<Schema>();
 
+interface ChartData {
+  DeviceDatetime: string;
+  ActualTemp: number | null;
+  TargetTemp: number | null;
+  PresetTemp: number | null;
+  ReferenceTemp: number | null;
+  ControlStage: string | null;
+  Device: string;
+  Division: string;
+}
+
 export default function App() {
 
-
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
-  const [posts, setPosts] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
-  const [devices, setDevices] = useState<Array<Schema["Post"]["type"]>>([]); //Postを追加。
-  //const [Iotdatas, setIots] = useState<Array<Schema["IotData"]["type"]>>([]); //Postを追加。
+  const [posts, setPosts] = useState<Array<Schema["Post"]["type"]>>([]);
+  const [devices, setDevices] = useState<Array<Schema["Post"]["type"]>>([]);
 
+  const [startDate, setStartDatetime] = useState(new Date());
+  const [endDate, setEndDatetime] = useState(new Date());
 
-  // StartDatetimeとEndDatetimeを選択するためのステート。useState()の中は初期値。
-  //const [startDate, setStartDatetime] = useState("2025-01-31");
-  //const [endDate, setEndDatetime] = useState("2025-01-31");
-  const [startDate, setStartDatetime] = useState(new Date());//本日の日付をデフォルト表示。
-  const [endDate, setEndDatetime] = useState(new Date());//本日の日付をデフォルト表示。
+  const [chartData, setChartData] = useState<ChartData[]>([]);
+  const [currentDivisionIndex, setCurrentDivisionIndex] = useState(0);
 
+  const divisions = ["MUTS-Flower", "MUTS-Dining", "MUTS-Rest"];
 
   interface Device {
     Device: string;
@@ -39,150 +48,143 @@ export default function App() {
     DeviceType: string;
   }
 
-
-  function listTodos() {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
-  }
-
   useEffect(() => {
-    listTodos();
-    getPost(); // Postの初期表示
-    listIot (); // Postの初期表示
-    listIotDataByController (); // Postの初期表示
+    listIot();
 
-    //サブスクリプションの設定をuseEffect()の中に移動。
-    const sub = client.subscriptions.receivePost()
+    const sub = client.subscriptions.receivelistIot()
     .subscribe({
       next: event => {
         console.log(event)
-        setPosts(prevPosts => [...prevPosts, event]);
+        //setPosts(prevPosts => [...prevPosts, event]);
       },
     });
 
-    // クリーンアップ関数を返してサブスクリプションを解除
     return () => sub.unsubscribe();
 
-  //}, []);
-  }, [startDate, endDate]);//★startDatetimeとendDatetimeが変更されたときにlistIot関数を呼び出す
+  }, [startDate, endDate, currentDivisionIndex]);
 
-  function createTodo() {
-    client.models.Todo.create({
-      content: window.prompt("Todo content"),
+  async function listIot() {
+
+    const startDatetime = `${format(startDate, "yyyy-MM-dd")} 00:00:00+09:00`;
+    const endDatetime = `${format(endDate, "yyyy-MM-dd")} 23:59:59+09:00`;
+
+    console.log("StartDatetime=", startDate);
+    console.log("EndDatetime=", endDate);
+
+    const { data, errors } = await client.queries.listIot({
+      Controller: "Mutsu01",
+      StartDatetime: startDatetime,
+      EndDatetime: endDatetime,
     });
-  }
+    console.log('listIot=', data)
 
-  //step5にて追加。
-  async function addPost () {
-    const {data} = await client.mutations.addPost({
-      Controller: window.prompt("Controller"),
-
-    },{authMode: "apiKey"});
-    //console.log(data)
-  }
-
-  //getPostを追記
-  async function getPost () {
-
-    const { data, errors } = await client.queries.getPost({
-      Device: "AC233FA3DA16" ,//任意のDeviceをキーに1件抽出。
-    });
-    console.log('get=',data)
-
-    //画面への転送を追記
     if (data) {
-      setPosts(prevPosts => [...prevPosts, data]);
+      const formattedData = data
+        .filter(item => item?.Division === divisions[currentDivisionIndex]) // Divisionでフィルタリング
+        .map(item => ({
+          DeviceDatetime: item?.DeviceDatetime ?? '',
+          ActualTemp: item?.ActualTemp !== undefined && item.ActualTemp !== null ? parseFloat(item.ActualTemp) : null,
+          TargetTemp: item?.TargetTemp !== undefined && item.TargetTemp !== null ? parseFloat(item.TargetTemp) : null,
+          PresetTemp: item?.PresetTemp !== undefined && item.PresetTemp !== null ? parseFloat(item.PresetTemp) : null,
+          ReferenceTemp: item?.ReferenceTemp !== undefined && item.ReferenceTemp !== null ? parseFloat(item.ReferenceTemp) : null,
+          ControlStage: item?.ControlStage ?? null,
+          Device: item?.Device ?? '',
+          Division: item?.Division ?? '',
+        }));
+
+      // DeviceDatetime順にソート（Deviceをソートキーに含めない）
+      formattedData.sort((a, b) => parseISO(a.DeviceDatetime).getTime() - parseISO(b.DeviceDatetime).getTime());
+
+      console.log('Formatted Data:', formattedData);
+
+      setChartData(formattedData);
     }
   }
 
-  //Iotのデータを抽出。
-    async function listIot () {
-
-      //const startDatetime = `${startDate} 00:00:00+09:00`;
-      //const endDatetime = `${endDate} 23:59:59+09:00`;
-      const startDatetime = `${format(startDate, "yyyy-MM-dd")} 00:00:00+09:00`;
-      const endDatetime = `${format(endDate, "yyyy-MM-dd")} 23:59:59+09:00`;
-
-      console.log("StartDatetime=", startDate); // デバッグ用のログ出力
-      console.log("EndDatetime=", endDate); // デバッグ用のログ出力
-
-      const { data, errors } = await client.queries.listIot({
-
-        Controller: "Mutsu01",//Controllerが"Mutsu01"であるデータを抽出。
-        //DeviceDatetime: "2024-06-30 23:28:28+09:00",
-        //StartDatetime: "2025-01-31 00:00:00+09:00",//範囲検索
-        StartDatetime: startDatetime,//★修正
-        //EndDatetime: "2025-01-31 23:59:59+09:00",//範囲検索
-        EndDatetime: endDatetime,//★修正
-      });
-      console.log('listIot=',data)
-  
+  // デバイスごとにデータをグループ化
+  const groupedData = chartData.reduce<Record<string, ChartData[]>>((acc, item) => {
+    if (!acc[item.Device]) {
+      acc[item.Device] = [];
     }
+    acc[item.Device].push(item);
+    return acc;
+  }, {});
 
-  //listIotByControllerを追記。
-  async function listIotDataByController () {
+  const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#387908"];
 
+  // デバイスごとのデータを統合して表示
+  const mergedData = chartData.map(item => {
+    const newItem: Record<string, any> = { DeviceDatetime: item.DeviceDatetime };
+    Object.keys(groupedData).forEach(device => {
+      const deviceData = groupedData[device].find(d => d.DeviceDatetime === item.DeviceDatetime);
+      newItem[device] = deviceData ? deviceData.ActualTemp : null;
+    });
+    newItem.TargetTemp = item.TargetTemp;
+    newItem.PresetTemp = item.PresetTemp;
+    newItem.ReferenceTemp = item.ReferenceTemp;
+    newItem.ControlStage = item.ControlStage;
+    return newItem;
+  });
 
+  const handleNext = () => {
+    setCurrentDivisionIndex((prevIndex) => (prevIndex + 1) % divisions.length);
+  };
 
-    console.log('page called'); // 関数が呼び出されたことを確認
-    try {  
-      const { data, errors } = await client.queries.listIotDataByController({
-        Controller: "Mutsu01",//Controllerが"Mutsu01"であるデータを抽出。
-        DeviceDatetime: "2024-06-30 23:28:28+09:00",
-      });
-    
-      if (errors) {
-        console.error('Query エラー', errors); // エラーがある場合にログ出力
-      } else if (data) {
-        console.log('Query 結果', data); // クエリ結果をログ出力
-      } else {
-        console.log('データ無し'); // データが返されなかった場合
-      }
+  const handlePrevious = () => {
+    setCurrentDivisionIndex((prevIndex) => (prevIndex - 1 + divisions.length) % divisions.length);
+  };
 
-    } catch (error) {
-      console.error('予期しないエラー', error); // 予期しないエラーをログ出力
+  // ControlStageに応じたプロットの色を設定
+  const getDotColor = (controlStage: string | null) => {
+    switch (controlStage) {
+      case '1a':
+        return '#ff0000'; // 赤
+      case '1b':
+        return '#00ff00'; // 緑
+      case '2a':
+        return '#0000ff'; // 青
+      case '2b':
+        return '#ffff00'; // 黄
+      case '3a':
+        return '#ff00ff'; // マゼンタ
+      case '3b':
+        return '#00ffff'; // シアン
+      default:
+        return '#000000'; // 黒
     }
-  }
+  };
 
+  // カスタムドットコンポーネント
+  const CustomDot = (props: any) => {
+    const { cx, cy, payload } = props;
+    const color = getDotColor(payload.ControlStage);
+    const size = 4;
 
-  // リストボックスコンポーネントを追加
-  //function handleStartDatetimeChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    //setStartDatetime(event.target.value);
-  //}
+    return <circle cx={cx} cy={cy} r={size} fill={color} />;
+  };
 
-  //function handleEndDatetimeChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    //setEndDatetime(event.target.value);
-  //}
+  // カスタムツールチップコンポーネント
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip">
+          <p className="label">{`Time: ${label}`}</p>
+          {payload.map((entry: any, index: number) => (
+            <p key={`item-${index}`} style={{ color: entry.color }}>
+              {`${entry.name}: ${entry.value}`}
+            </p>
+          ))}
+          <p>{`ControlStage: ${payload[0].payload.ControlStage}`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
 
 
   return (
     <main>
-      <h1>My todos</h1>
-      <button onClick={createTodo}>+ new</button>
-      <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>{todo.content}</li>
-        ))}
-      </ul>
-
-      <h1>My posts</h1>
-      <button onClick={addPost}>+ new post</button>
-      <ul>
-        {posts.map((post) => (
-          <li key={post.Device}>{post.Controller}</li>
-        ))}
-      </ul>
-
-      <h1>My lists</h1>
-      <button onClick={addPost}>+ new post</button>
-      <ul>
-        {devices.map((device) => (
-          <li key={device.Device}>{device.Controller}</li>
-        ))}
-      </ul>
-
-
       <div>
         <label>
           StartDatetime:
@@ -195,11 +197,59 @@ export default function App() {
       </div>
 
       <div>
-        🥳 App successfully hosted. Try creating a new todo.
-        <br />
-        <a href="https://docs.amplify.aws/nextjs/start/quickstart/nextjs-app-router-client-components/">
-          Review next steps of this tutorial.
-        </a>
+        <button onClick={handlePrevious}>前へ</button>
+        <button onClick={handleNext}>次へ</button>
+      </div>
+
+      <div>
+        <h1>Temperature Data for {divisions[currentDivisionIndex]}</h1>
+        <ResponsiveContainer width="100%" height={400}>
+          <LineChart data={mergedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="DeviceDatetime" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            {Object.keys(groupedData).map((device, index) => (
+              <Line
+                key={device}
+                type="monotone"
+                dataKey={device}
+                name={device}
+                stroke={colors[index % colors.length]}
+                dot={{ r: 0.2, fill: colors[index % colors.length] }}
+                connectNulls
+              />
+            ))}
+            <Line
+              type="monotone"
+              dataKey="TargetTemp"
+              name="TargetTemp"
+              stroke="#00ff00"
+              dot={false}
+              connectNulls
+              isAnimationActive={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="PresetTemp"
+              name="PresetTemp"
+              stroke="#0000ff"
+              dot={false}
+              connectNulls
+              isAnimationActive={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="ReferenceTemp"
+              name="ReferenceTemp"
+              stroke="#800080"
+              dot={false}
+              connectNulls
+              isAnimationActive={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </main>
   );
