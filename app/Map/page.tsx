@@ -152,6 +152,7 @@ const InitialViewState = {
   bearing: 20,
 };
 
+
 const buildingData = {
   type: "FeatureCollection",
   features: [
