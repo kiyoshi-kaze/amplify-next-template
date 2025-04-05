@@ -173,6 +173,7 @@ const TerrainMap: FC = () => {
     geojsonData.forEach((entry, index) => {
       try {
         const geojson = JSON.parse(entry.DivisionGeojson);
+        console.log("geojson（forEach内）=", geojson);
 
         map.addSource(`division-${index}`, {
           type: "geojson",
