@@ -133,6 +133,8 @@ const TerrainMap: FC = () => {
     Array<{ Division: string; DivisionGeojson: string }>
   >([]);
 
+  console.log("geojsonData（useState直後）=", geojsonData);
+
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
