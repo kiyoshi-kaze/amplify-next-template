@@ -106,14 +106,12 @@ const TerrainMap: FC = () => {
 
 export default TerrainMap;
 
-
 */
-
 import React, { useEffect } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-const IndoorMap = () => {
+export default function App() {
   useEffect(() => {
     const map = new maplibregl.Map({
       container: 'map',
@@ -170,6 +168,4 @@ const IndoorMap = () => {
   }, []);
 
   return <div id="map" style={{ height: '100vh' }} />;
-};
-
-export default IndoorMap;
+}
