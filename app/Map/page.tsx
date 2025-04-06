@@ -107,6 +107,8 @@ const TerrainMap: FC = () => {
 export default TerrainMap;
 
 */
+
+"use client";
 import React, { useEffect } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
