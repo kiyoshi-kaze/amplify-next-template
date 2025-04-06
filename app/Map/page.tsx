@@ -150,8 +150,8 @@ export default function App() {
     map.on('load', () => {
       map.addSource('floorplan', {
         type: 'geojson',
-        //data: 'https://maplibre.org/maplibre-gl-js/docs/assets/indoor-3d-map.geojson',
-        data: divisionLists[0].DivisionGeojson
+        data: 'https://maplibre.org/maplibre-gl-js/docs/assets/indoor-3d-map.geojson',
+        //data: divisionLists[0].DivisionGeojson
       });
 
       map.addLayer({
