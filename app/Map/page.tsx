@@ -140,7 +140,7 @@ export default function App() {
           },
         ],
       },
-      center: [-87.61694, 41.86625],
+      center: [140.325250, 35.355518],
       zoom: 15.99,
       pitch: 40,
       bearing: 20,
