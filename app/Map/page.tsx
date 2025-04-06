@@ -92,9 +92,9 @@ const client = generateClient<Schema>();
 
 export default function App() {
 
-  const [posts, setPosts] = useState<Array<{ Division: string; DivisionName: string; DivisionGeojson: string ;Controller?: string | null }>>([]);
-  console.log('listDivision（useState直後）=', posts);
-  
+  const [divisionLists, setPosts] = useState<Array<{ Division: string; DivisionName: string; DivisionGeojson: string ;Controller?: string | null }>>([]);
+  console.log('divisionLists（useState直後）=', divisionLists);
+
   useEffect(() => {
     listPost();
     renderMap(); 
@@ -105,7 +105,7 @@ export default function App() {
     const { data, errors } = await client.queries.listDivision({
       Controller: "Mutsu01",
     });
-    console.log('listDivision（関数内）=', data);
+    console.log('divisionLists（関数内）=', data);
     if (data) {
       setPosts(data as Array<{ Division: string; DivisionName: string; DivisionGeojson: string; Controller?: string | null }>); // 型を明示的にキャストする
     }
@@ -150,7 +150,8 @@ export default function App() {
     map.on('load', () => {
       map.addSource('floorplan', {
         type: 'geojson',
-        data: 'https://maplibre.org/maplibre-gl-js/docs/assets/indoor-3d-map.geojson',
+        //data: 'https://maplibre.org/maplibre-gl-js/docs/assets/indoor-3d-map.geojson',
+        data: divisionLists[0].DivisionGeojson
       });
 
       map.addLayer({
