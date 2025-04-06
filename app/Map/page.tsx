@@ -118,8 +118,6 @@ export default function App() {
       return <div>Loading...</div>;
     }
 
-    console.log('DivisionGeojson（Map直前）=', divisionLists[0].DivisionGeojson);
-
     const map = new maplibregl.Map({
       container: 'map',
       style: {
@@ -157,8 +155,8 @@ export default function App() {
     map.on('load', () => {
       map.addSource('floorplan', {
         type: 'geojson',
-        data: 'https://maplibre.org/maplibre-gl-js/docs/assets/indoor-3d-map.geojson',
-        //data: divisionLists[0].DivisionGeojson
+        //data: 'https://maplibre.org/maplibre-gl-js/docs/assets/indoor-3d-map.geojson',
+        data: divisionLists[0].DivisionGeojson,
       });
 
       map.addLayer({
