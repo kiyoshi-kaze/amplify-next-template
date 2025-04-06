@@ -93,7 +93,7 @@ const client = generateClient<Schema>();
 export default function App() {
 
   const [divisionLists, setPosts] = useState<Array<{ Division: string; DivisionName: string; DivisionGeojson: string ;Controller?: string | null }>>([]);
-  console.log('divisionLists（useState直後）=', divisionLists);
+  console.log('divisionLists（useState直後）=', divisionLists[0].DivisionName);
 
   useEffect(() => {
     listPost();
