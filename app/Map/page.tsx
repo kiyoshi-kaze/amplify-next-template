@@ -130,7 +130,6 @@ export default function App() {
 
 
 */
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -184,6 +183,9 @@ export default function App() {
     }
   }
 
+
+  let map; // map変数をスコープ外で定義
+
   async function renderMap() {
 
     //const buildingData = Geojsons[0] ;
@@ -217,9 +219,9 @@ export default function App() {
         ],
       },
       center: [140.302994, 35.353503],
-      zoom: 15.99,
-      pitch: 40,
-      bearing: 20,
+      zoom: 17,
+      pitch: 30,
+      bearing: 30,
     });
 
     map.on('load', () => {
@@ -240,15 +242,47 @@ export default function App() {
           'fill-extrusion-color': ['get', 'color'],
           'fill-extrusion-height': ['get', 'height'],
           'fill-extrusion-base': ['get', 'base_height'],
-          'fill-extrusion-opacity': 0.5,
+          'fill-extrusion-opacity': 0.3,
         },
       });
 
+
+      map.addLayer({
+        id: 'room-outline',
+        type: 'line',
+        source: 'floorplan',
+        paint: {
+        'line-color': '#000000', // Black color for outlines
+        'line-width': 1,
+        },
+      });
+        
+
+      // マウス操作で回転と角度変更を有効にする
+      map.dragRotate.enable();
+      map.touchZoomRotate.enableRotation();
+      
+
+      // カスタムハンドラーを作成して回転の感度を調整
+      map.on('mousemove', (e) => {
+        if (e.originalEvent.buttons === 2) { // 右クリック
+          const rotationSpeed = 0.5; // 回転速度を調整
+          map.rotateTo(map.getBearing() + e.originalEvent.movementX * rotationSpeed);
+        }
+      });
+      
+
+
+      // NavigationControlの追加
+      const nav = new maplibregl.NavigationControl({
+        showCompass: true, // コンパスを表示
+        visualizePitch: true, // ピッチ（角度）を表示
+      });
+      map.addControl(nav, 'top-left');
     });
-    
-
-
+  
   }
 
-  return <div id="map" style={{ height: '100vh' }} />;
+  return <div id="map" style={{ height: '80vh', width: '80%' }} />;
+
 }
