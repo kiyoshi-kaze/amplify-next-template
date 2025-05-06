@@ -306,26 +306,10 @@ export default function App() {
           source: sourceId,
           paint: {
 
-            //'fill-extrusion-color': [
-              //'case',
-              //['==', ['geometry-type'], 'Polygon'], '#add8e6', // 底面をLightBlueに設定
-              //'#00008b' // 側面をDeepBlueに設定
-            //],
-
             'fill-extrusion-color': [
               'case',
-              ['==', ['geometry-type'], 'Polygon'], 
-                ['get', 'color'], // 底面の色をデータから取得
-              [
-                'rgba', 
-                ['get', 'color'], // 赤成分
-                ['get', 'color'], // 緑成分
-                ['get', 'color'], // 青成分
-                //['get', 'color', 'r'], // 赤成分
-                //['get', 'color', 'g'], // 緑成分
-                //['get', 'color', 'b'], // 青成分
-                0.1 // 透過率を30%に設定
-              ] 
+              ['==', ['geometry-type'], 'Polygon'], '#add8e6', // 底面をLightBlueに設定
+              '#00008b' // 側面をDeepBlueに設定
             ],
 
             'fill-extrusion-height': ['get', 'height'],
