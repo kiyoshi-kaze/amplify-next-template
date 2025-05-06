@@ -151,6 +151,7 @@ import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
 
+
 const MapWith3DModel: React.FC = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
 
