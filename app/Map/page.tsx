@@ -308,13 +308,13 @@ export default function App() {
 
             'fill-extrusion-color': [
               'case',
-              ['==', ['geometry-type'], 'Polygon'], '#add8e6', // 底面をLightBlueに設定
-              '#00008b' // 側面をDeepBlueに設定
+              ['==', ['geometry-type'], 'Polygon'], 'lightblue', // 底面をLightBlueに設定
+              'darkblue' // 側面をdarkblueに設定
             ],
 
             'fill-extrusion-height': ['get', 'height'],
             'fill-extrusion-base': ['get', 'base_height'],
-            'fill-extrusion-opacity': 0.3, // 底面と側面両方の透明度。
+            'fill-extrusion-opacity': 0.5, // 底面と側面両方の透明度。
           },
         });
       
