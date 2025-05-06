@@ -323,7 +323,7 @@ export default function App() {
             'fill-extrusion-color': ['get', 'color'],
             'fill-extrusion-height': ['get', 'height'],
             'fill-extrusion-base': ['get', 'base_height'],
-            'fill-extrusion-opacity': 0.2, // 底面と側面両方の透明度。
+            'fill-extrusion-opacity': 0.4, // 底面と側面両方の透明度。
           },
         });
       
