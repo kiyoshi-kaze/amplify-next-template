@@ -113,6 +113,16 @@ export default function App() {
     });
     map.addControl(nav, 'top-left');
 
+
+    const hexToRgba = (hex: string, alpha: number = 1): string => {
+      // HEXコードをRGBに変換
+      const r = parseInt(hex.substring(1, 3), 16);
+      const g = parseInt(hex.substring(3, 5), 16);
+      const b = parseInt(hex.substring(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
+
     map.on('load', () => {
 
       divisionLists.forEach((division, index) => {
@@ -136,26 +146,14 @@ export default function App() {
           source: sourceId,
           paint: {
 
-            'fill-extrusion-color': [
-              'case',
-              ['==', ['geometry-type'], 'Polygon'], '#add8e6', // 底面をLightBlueに設定
-              '#00008b' // 側面をDeepBlueに設定
-            ],
-
             //'fill-extrusion-color': [
               //'case',
-              //['==', ['geometry-type'], 'Polygon'],['get', 'color'], // 底面の色をGeoJSONのcolorプロパティから取得
-              //['rgba', 
-                //['get', 'color_r'], // 赤成分
-                //['get', 'color_g'], // 緑成分
-                //['get', 'color_b'], // 青成分
-                //0.3 // 透過率30%
-              //] // 側面の色を底面の色の透過率30%で設定
+              //['==', ['geometry-type'], 'Polygon'], ['get', 'color'],['get', 'color']
             //],
-
+            'fill-extrusion-color': ['get', 'color'],
             'fill-extrusion-height': ['get', 'height'],
             'fill-extrusion-base': ['get', 'base_height'],
-            'fill-extrusion-opacity': 0.6,
+            'fill-extrusion-opacity': 0.4, // 底面と側面両方の透明度。
           },
         });
       
@@ -326,6 +324,17 @@ export default function App() {
             'fill-extrusion-opacity': 0.4, // 底面と側面両方の透明度。
           },
         });
+
+        map.addLayer({
+          id: 'outline-layer',
+          type: 'line',
+          source: sourceId,
+          paint: {
+            'line-color': '#000000',  // 黒
+            'line-width': 2           // 輪郭の太さ
+          }
+        });
+        
       
       })//endEach
 
