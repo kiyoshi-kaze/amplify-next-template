@@ -316,14 +316,14 @@ export default function App() {
           source: sourceId,
           paint: {
 
-            'fill-extrusion-color': [
-              'case',
-              ['==', ['geometry-type'], 'Polygon'], ['get', 'color'],['get', 'color']
-            ],
-
+            //'fill-extrusion-color': [
+              //'case',
+              //['==', ['geometry-type'], 'Polygon'], ['get', 'color'],['get', 'color']
+            //],
+            'fill-extrusion-color': ['get', 'color'],
             'fill-extrusion-height': ['get', 'height'],
             'fill-extrusion-base': ['get', 'base_height'],
-            'fill-extrusion-opacity': 0.5, // 底面と側面両方の透明度。
+            'fill-extrusion-opacity': 0.4, // 底面と側面両方の透明度。
           },
         });
       
