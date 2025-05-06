@@ -321,7 +321,7 @@ export default function App() {
                 ['get', 'color'], // 赤成分
                 ['get', 'color'], // 緑成分
                 ['get', 'color'], // 青成分
-                0.5 // 透過率を50%に設定
+                0.3 // 透過率を50%に設定
               ] 
             ],
 
