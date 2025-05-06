@@ -283,6 +283,16 @@ export default function App() {
     });
     map.addControl(nav, 'top-left');
 
+
+    const hexToRgba = (hex: string, alpha: number = 1): string => {
+      // HEXコードをRGBに変換
+      const r = parseInt(hex.substring(1, 3), 16);
+      const g = parseInt(hex.substring(3, 5), 16);
+      const b = parseInt(hex.substring(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
+
     map.on('load', () => {
 
       divisionLists.forEach((division, index) => {
@@ -308,8 +318,9 @@ export default function App() {
 
             'fill-extrusion-color': [
               'case',
-              ['==', ['geometry-type'], 'Polygon'], 'lightblue', // 底面をLightBlueに設定
-              'darkblue' // 側面をdarkblueに設定
+              ['==', ['geometry-type'], 'Polygon'], hexToRgba("#00008b", 0.5), // 底面をLightBlueに設定
+              '#00008b' // 側面をdarkblueに設定darkblue
+
             ],
 
             'fill-extrusion-height': ['get', 'height'],
