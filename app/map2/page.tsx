@@ -148,8 +148,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
-//import * as BABYLON from 'babylonjs';
-import * as BABYLON from '@babylonjs/core';
+import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
 
 const MapWith3DModel: React.FC = () => {
@@ -260,6 +259,8 @@ const MapWith3DModel: React.FC = () => {
 };
 
 export default MapWith3DModel;
+
+
 
 
 
