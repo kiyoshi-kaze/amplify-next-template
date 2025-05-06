@@ -326,12 +326,36 @@ export default function App() {
         });
 
         map.addLayer({
-          id: 'outline-layer',
+          id: 'outline-bottom',
           type: 'line',
           source: sourceId,
           paint: {
-            'line-color': '#000000',  // 黒
-            'line-width': 2           // 輪郭の太さ
+            'line-color': '#000000',  
+            'line-width': 2          
+          }
+        });
+        
+        map.addLayer({
+          id: 'outline-sides',
+          type: 'line',
+          source: sourceId,
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          paint: {
+            'line-color': '#000000',
+            'line-width': 2
+          }
+        });
+        
+        map.addLayer({
+          id: 'outline-top',
+          type: 'line',
+          source: sourceId,
+          paint: {
+            'line-color': '#000000',
+            'line-width': 2
           }
         });
         
