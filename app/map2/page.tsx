@@ -18,8 +18,8 @@ import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
 //import * as BABYLON from 'babylonjs';
 import * as BABYLON from '@babylonjs/core';
-
 import 'babylonjs-loaders';
+
 
 
 const MapWith3DModel: React.FC = () => {
