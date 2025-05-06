@@ -321,13 +321,13 @@ export default function App() {
                 ['get', 'color'], // 赤成分
                 ['get', 'color'], // 緑成分
                 ['get', 'color'], // 青成分
-                0.3 // 透過率を50%に設定
+                0.1 // 透過率を30%に設定
               ] 
             ],
 
             'fill-extrusion-height': ['get', 'height'],
             'fill-extrusion-base': ['get', 'base_height'],
-            'fill-extrusion-opacity': 0.6,
+            'fill-extrusion-opacity': 0.6, // 底面と側面両方の透明度。
           },
         });
       
