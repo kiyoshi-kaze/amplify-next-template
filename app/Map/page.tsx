@@ -318,8 +318,8 @@ export default function App() {
 
             'fill-extrusion-color': [
               'case',
-              ['==', ['geometry-type'], 'Polygon'], hexToRgba("#00008b", 0.5), // 底面をLightBlueに設定
-              '#00008b' // 側面をdarkblueに設定darkblue
+              ['==', ['geometry-type'], 'Polygon'], hexToRgba("#0000ff", 1.0), // 底面をLightBlueに設定
+              hexToRgba("#0000ff", 2.0) // 側面をdarkblueに設定darkblue
 
             ],
 
