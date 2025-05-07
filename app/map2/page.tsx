@@ -228,8 +228,11 @@ export default function App() {
       zoom: 18,
       center: [140.302994, 35.353503],
       pitch: 60,
-      canvasContextAttributes: { antialias: true }
+      //canvasContextAttributes: { antialias: true }
     });
+
+    const gl = map.getCanvas().getContext('webgl', { antialias: true });
+
 
     const worldOrigin: [number, number] = [140.302994, 35.353503];
     const worldAltitude = 0;
