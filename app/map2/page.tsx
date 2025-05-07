@@ -166,6 +166,9 @@ export default function App() {
 
 */
 
+
+"use client"; // 追加
+
 import React, { useEffect, useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import maplibregl from 'maplibre-gl';
