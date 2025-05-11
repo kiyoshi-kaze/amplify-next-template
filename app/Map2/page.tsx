@@ -278,8 +278,8 @@ export default function App() {
         console.log('gltfJson[0]=', gltfJson);
 
         BABYLON.SceneLoader.LoadAssetContainerAsync(
-          'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/34M_17.gltf',
-          '',
+          'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/',
+          '34M_17.gltf',
           scene
         ).then((gltfJson) => {
           const modelContainer = gltfJson;
