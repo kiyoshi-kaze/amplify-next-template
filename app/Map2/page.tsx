@@ -316,7 +316,8 @@ const customLayer: maplibregl.CustomLayerInterface = {
   },
 
   render(gl: WebGLRenderingContext, args: any) {
-    const cameraMatrix = BABYLON.Matrix.FromArray(args.defaultProjectionData.mainMatrix);
+    //const cameraMatrix = BABYLON.Matrix.FromArray(args.defaultProjectionData.mainMatrix);
+    const cameraMatrix = BABYLON.Matrix.FromArray(args.defaultProjectionData?.mainMatrix || []);
     const wvpMatrix = worldMatrix.multiply(cameraMatrix);
 
     if ((this as any).camera) {
