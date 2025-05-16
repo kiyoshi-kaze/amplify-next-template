@@ -34,7 +34,18 @@ const client = generateClient<Schema>();
 export default function App() {
 
   const [divisionLists, setPosts] = useState<Array<{ Division: string; DivisionName: string; Geojson: string ;Controller?: string | null }>>([]);
-  const [deviceLists, setDevices] = useState<Array<{ Device: string; DeviceName: string; DeviceType: string; gltf: string; Division: string; Controller?: string | null }>>([]);
+  const [deviceLists, setDevices] = useState<Array<{
+    Device: string;
+    DeviceName: string;
+    DeviceType: string;
+    model: string;
+    lon: number;
+    lat: number;
+    height: number;
+    direction: string
+    Division: string;
+    Controller?: string
+    | null }>>([]);
   
   console.log('divisionLists（State直後）=', divisionLists);
 
@@ -68,7 +79,18 @@ export default function App() {
     }
 
     if (deviceData) {
-      setDevices(deviceData as Array<{ Device: string; DeviceName: string; DeviceType: string; gltf: string; Division: string; Controller?: string | null }>);
+      setDevices(deviceData as Array<{
+        Device: string;
+        DeviceName: string;
+        DeviceType: string;
+        model: string;
+        lon: number;
+        lat: number;
+        height: number;
+        direction: string;
+        Division: string;
+        Controller?: string
+        | null }>);
     }
 }
 
@@ -140,10 +162,16 @@ export default function App() {
 
 
     // 3Dモデルを表示するためのカスタムレイヤーを作成
+    console.log('okoko');
+    console.log('deviceLists=', deviceLists);
+    const model = deviceLists[0].model;
+    console.log('model=', model);
+    const worldOrigin: [number, number] = [deviceLists[0].lon, deviceLists[0].lat];
+    //const worldAltitude = 0;
+    const worldAltitude = deviceLists[0].height ;
+    //const worldRotate = [Math.PI / 2, 0, 0];
+    const worldRotate = JSON.parse(deviceLists[0].direction) as [number, number, number];
 
-    const worldOrigin: [number, number] = [140.302994, 35.353503];
-    const worldAltitude = 0;
-    const worldRotate = [Math.PI / 2, 0, 0];
 
     const worldOriginMercator = maplibregl.MercatorCoordinate.fromLngLat(worldOrigin, worldAltitude);
     const worldScale = worldOriginMercator.meterInMercatorCoordinateUnits();
@@ -179,16 +207,13 @@ export default function App() {
 
         new BABYLON.AxesViewer(scene, 10);
 
-        //const gltfJson = JSON.parse(device.gltf);
-        const gltfJson = JSON.parse(deviceLists[0].gltf);
-        console.log('gltfJson[0]=', gltfJson);
-
-
         // URLから.gltfファイルを読み込む
         BABYLON.SceneLoader.LoadAssetContainerAsync(
           //'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/34M_17.gltf',
           'https://pckk-device.s3.ap-southeast-2.amazonaws.com/',
-          'sample.gltf',
+          //'sample.gltf',
+          `${model}.gltf`, // ← ここで model に .gltf を連結
+
           //'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/',
           //'34M_17.gltf',
 
@@ -495,6 +520,12 @@ export default function App() {
       },
 
       render(gl: WebGLRenderingContext, args: any) {
+
+        if (!args.defaultProjectionData || !args.defaultProjectionData.mainMatrix) {
+          console.error("defaultProjectionData is undefined", args);
+          return;
+        }
+
         const cameraMatrix = BABYLON.Matrix.FromArray(args.defaultProjectionData.mainMatrix);
         const wvpMatrix = worldMatrix.multiply(cameraMatrix);
 
@@ -508,6 +539,9 @@ export default function App() {
           (this as any).map.triggerRepaint();
         }
       }
+
+
+
     };
 
     // 3Dモデルを地図に追加
