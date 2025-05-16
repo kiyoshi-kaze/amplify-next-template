@@ -372,6 +372,7 @@ export default function App() {
 
   let map: maplibregl.Map; // map変数をスコープ外で定義
 
+  
   async function renderMap() {
 
     if (deviceLists.length === 0) return; // deviceLists が空なら処理を中断
