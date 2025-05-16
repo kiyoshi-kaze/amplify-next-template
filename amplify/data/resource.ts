@@ -119,6 +119,11 @@ const schema = a.schema({
     Controller: a.string(),
     DeviceType: a.string(),
     Division: a.string(),
+    model: a.string(),
+    lon: a.float() ,
+    lat: a.float() ,
+    height: a.float() ,
+    direction: a.string(),
   }),
 
   // add
@@ -130,6 +135,11 @@ const schema = a.schema({
       Controller: a.string(),
       DeviceType: a.string(),
       Division: a.string(),
+      model: a.string(),
+      lon: a.float() ,
+      lat: a.float() ,
+      height: a.float() ,
+      direction: a.string(),
     })
     .returns(a.ref("Device"))
     .authorization(allow => [allow.publicApiKey()])
@@ -149,6 +159,11 @@ const schema = a.schema({
     Controller: a.string(),
     DeviceType: a.string(),
     Division: a.string(),
+    model: a.string(),
+    lon: a.float() ,
+    lat: a.float() ,
+    height: a.float() ,
+    direction: a.string(),
   })
   .returns(a.ref("Device").array())
   .authorization(allow => [allow.publicApiKey()])
@@ -237,6 +252,7 @@ const schema = a.schema({
     DeviceDatetime: a.string(),
     Controller: a.string(),
     ControlStage: a.string(),
+    CumulativeEnergy: a.string(),
     Power: a.string(),
     WeightedTemp: a.string(),
     ReferenceTemp: a.string(), 
