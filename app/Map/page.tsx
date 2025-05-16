@@ -374,6 +374,8 @@ export default function App() {
 
   async function renderMap() {
 
+    if (deviceLists.length === 0) return; // deviceLists が空なら処理を中断
+
     //const map = new maplibregl.Map({
     map = new maplibregl.Map({
       container: 'map',
