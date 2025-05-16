@@ -428,13 +428,13 @@ export default function App() {
     });
     map.addControl(nav, 'top-left');
 
-    map.on('load', () => {
+    //map.on('load', () => {
 
-      divisionLists.forEach((division, index) => {
-        addGeoJsonLayerToMap(map, division, index);  
-      })//endEach
+      //divisionLists.forEach((division, index) => {
+        //addGeoJsonLayerToMap(map, division, index);  
+      //})//endEach
 
-    });
+    //});
 
 
     // 3Dモデルを表示するためのカスタムレイヤーを作成
@@ -541,18 +541,10 @@ export default function App() {
 
     // 3Dモデルを地図に追加
 
-    //map.on('style.load', () => {
-      //if (!map.getLayer('3d-model')) {
-        //map.addLayer(customLayer);
-      //}
-    //});
-
     map.on('style.load', () => {
-      setTimeout(() => {
-        if (!map.getLayer('3d-model')) {
-          map.addLayer(customLayer);
-        }
-      }, 100);
+      if (!map.getLayer('3d-model')) {
+        map.addLayer(customLayer);
+      }
     });
 
     return () => {
