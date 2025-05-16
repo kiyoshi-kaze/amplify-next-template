@@ -413,7 +413,7 @@ export default function App() {
 
 
     // 3Dモデルを表示するためのカスタムレイヤーを作成
-
+    console.log('okoko');
     const model = deviceLists[0].model;
     console.log('model=', model);
     const worldOrigin: [number, number] = [deviceLists[0].lon, deviceLists[0].lat];
