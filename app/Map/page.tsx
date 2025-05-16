@@ -2,6 +2,7 @@
 //を改変。
 /*
 
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -20,6 +21,12 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
+import { addGeoJsonLayerToMap } from '../utils/addGeoJsonLayerToMap';
+
+import * as BABYLON from 'babylonjs';
+import 'babylonjs-loaders';
+
+
 Amplify.configure(outputs);
 
 const client = generateClient<Schema>();
@@ -27,6 +34,8 @@ const client = generateClient<Schema>();
 export default function App() {
 
   const [divisionLists, setPosts] = useState<Array<{ Division: string; DivisionName: string; Geojson: string ;Controller?: string | null }>>([]);
+  const [deviceLists, setDevices] = useState<Array<{ Device: string; DeviceName: string; DeviceType: string; gltf: string; Division: string; Controller?: string | null }>>([]);
+  
   console.log('divisionLists（State直後）=', divisionLists);
 
   useEffect(() => {
@@ -45,22 +54,30 @@ export default function App() {
   }, [divisionLists]);
 
   async function listPost() {
-    const { data, errors } = await client.queries.listDivision({
+
+    const { data: divisionData, errors: divisionErrors } = await client.queries.listDivision({
       Controller: "Mutsu01",
     });
-    console.log('data（関数内）=', data);
-    //divisionLists の状態を更新
-    if (data) {
-      setPosts(data as Array<{ Division: string; DivisionName: string; Geojson: string; Controller?: string | null }>); // 型を明示的にキャストする
+
+    const { data: deviceData, errors: deviceErrors } = await client.queries.listDevice({
+      Controller: "Mutsu01",
+    });
+
+    if (divisionData) {
+      setPosts(divisionData as Array<{ Division: string; DivisionName: string; Geojson: string; Controller?: string | null }>);
     }
-  }
 
+    if (deviceData) {
+      setDevices(deviceData as Array<{ Device: string; DeviceName: string; DeviceType: string; gltf: string; Division: string; Controller?: string | null }>);
+    }
+}
 
-  let map; // map変数をスコープ外で定義
+  let map: maplibregl.Map; // map変数をスコープ外で定義
 
   async function renderMap() {
 
-    const map = new maplibregl.Map({
+    //const map = new maplibregl.Map({
+    map = new maplibregl.Map({
       container: 'map',
       style: {
         version: 8,
@@ -113,54 +130,121 @@ export default function App() {
     });
     map.addControl(nav, 'top-left');
 
-
-    const hexToRgba = (hex: string, alpha: number = 1): string => {
-      // HEXコードをRGBに変換
-      const r = parseInt(hex.substring(1, 3), 16);
-      const g = parseInt(hex.substring(3, 5), 16);
-      const b = parseInt(hex.substring(5, 7), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    };
-
-
     map.on('load', () => {
 
       divisionLists.forEach((division, index) => {
-        //JSON.parseを使って文字列をGeoJSONオブジェクトに変換
-        const geojsonData = JSON.parse(division.Geojson);
-        const sourceId = `floorplan-${index}`; // ユニークなIDを生成
-        const layerId = `room-extrusion-${index}`; // ユニークなIDを生成
-
-        console.log("index=", index);
-        console.log("sourceId=", sourceId);
-        console.log('geojsonData（renderMap内）=', geojsonData);
-
-        map.addSource(sourceId, {
-          type: 'geojson',
-          data: geojsonData,
-        });
-
-        map.addLayer({
-          id: layerId,
-          type: 'fill-extrusion',
-          source: sourceId,
-          paint: {
-
-            //'fill-extrusion-color': [
-              //'case',
-              //['==', ['geometry-type'], 'Polygon'], ['get', 'color'],['get', 'color']
-            //],
-            'fill-extrusion-color': ['get', 'color'],
-            'fill-extrusion-height': ['get', 'height'],
-            'fill-extrusion-base': ['get', 'base_height'],
-            'fill-extrusion-opacity': 0.4, // 底面と側面両方の透明度。
-          },
-        });
-      
+        addGeoJsonLayerToMap(map, division, index);  
       })//endEach
 
     });
-  
+
+
+    // 3Dモデルを表示するためのカスタムレイヤーを作成
+
+    const worldOrigin: [number, number] = [140.302994, 35.353503];
+    const worldAltitude = 0;
+    const worldRotate = [Math.PI / 2, 0, 0];
+
+    const worldOriginMercator = maplibregl.MercatorCoordinate.fromLngLat(worldOrigin, worldAltitude);
+    const worldScale = worldOriginMercator.meterInMercatorCoordinateUnits();
+
+    const worldMatrix = BABYLON.Matrix.Compose(
+      new BABYLON.Vector3(worldScale, worldScale, worldScale),
+      BABYLON.Quaternion.FromEulerAngles(worldRotate[0], worldRotate[1], worldRotate[2]),
+      new BABYLON.Vector3(worldOriginMercator.x, worldOriginMercator.y, worldOriginMercator.z)
+    );
+
+    const customLayer: maplibregl.CustomLayerInterface = {
+      id: '3d-model',
+      type: 'custom',
+      renderingMode: '3d',
+
+      onAdd(map: maplibregl.Map, gl: WebGLRenderingContext) {
+        // エンジン、シーン、カメラの初期化
+        const engine = new BABYLON.Engine(gl, true, { useHighPrecisionMatrix: true }, true);
+        const scene = new BABYLON.Scene(engine);
+        scene.autoClear = false;
+        scene.detachControl();
+
+        scene.beforeRender = () => {
+          if (engine) {
+            engine.wipeCaches(true);
+          }
+        };
+
+        const camera = new BABYLON.Camera('Camera', new BABYLON.Vector3(0, 0, 0), scene);
+
+        const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 0, 100), scene);
+        light.intensity = 0.7;
+
+        new BABYLON.AxesViewer(scene, 10);
+
+        //const gltfJson = JSON.parse(device.gltf);
+        const gltfJson = JSON.parse(deviceLists[0].gltf);
+        console.log('gltfJson[0]=', gltfJson);
+
+
+        // URLから.gltfファイルを読み込む
+        BABYLON.SceneLoader.LoadAssetContainerAsync(
+          //'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/34M_17.gltf',
+          'https://pckk-device.s3.ap-southeast-2.amazonaws.com/',
+          'sample.gltf',
+          //'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/',
+          //'34M_17.gltf',
+
+          //'https://pckk-device.s3.ap-northeast-1.amazonaws.com/',
+          //'34M_17.gltf',
+
+          scene
+        //).then((modelContainer) => {
+        ).then((gltfJson) => { //変更。         
+          const modelContainer = gltfJson ; //変更。
+
+          modelContainer.addAllToScene();
+
+
+
+          const rootMesh = modelContainer.createRootMesh();
+          const rootMesh2 = rootMesh.clone();
+
+          rootMesh2.position.x = 25;
+          rootMesh2.position.z = 25;
+        });
+
+        // プロパティをカスタムレイヤーオブジェクトに追加
+        (this as any).map = map;
+        (this as any).engine = engine;
+        (this as any).scene = scene;
+        (this as any).camera = camera;
+      },
+
+      render(gl: WebGLRenderingContext, args: any) {
+        const cameraMatrix = BABYLON.Matrix.FromArray(args.defaultProjectionData.mainMatrix);
+        const wvpMatrix = worldMatrix.multiply(cameraMatrix);
+
+        if ((this as any).camera) {
+          (this as any).camera.freezeProjectionMatrix(wvpMatrix);
+        }
+        if ((this as any).scene) {
+          (this as any).scene.render(false);
+        }
+        if ((this as any).map) {
+          (this as any).map.triggerRepaint();
+        }
+      }
+    };
+
+    // 3Dモデルを地図に追加
+    map.on('style.load', () => {
+      if (!map.getLayer('3d-model')) {
+        map.addLayer(customLayer);
+      }
+    });
+
+    return () => {
+      map.remove();
+    };
+
   }
 
   return <div id="map" style={{ height: '80vh', width: '80%' }} />;
@@ -188,6 +272,12 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 
+import { addGeoJsonLayerToMap } from '../utils/addGeoJsonLayerToMap';
+
+import * as BABYLON from 'babylonjs';
+import 'babylonjs-loaders';
+
+
 Amplify.configure(outputs);
 
 const client = generateClient<Schema>();
@@ -195,6 +285,19 @@ const client = generateClient<Schema>();
 export default function App() {
 
   const [divisionLists, setPosts] = useState<Array<{ Division: string; DivisionName: string; Geojson: string ;Controller?: string | null }>>([]);
+  const [deviceLists, setDevices] = useState<Array<{
+    Device: string;
+    DeviceName: string;
+    DeviceType: string;
+    model: string;
+    lon: number;
+    lat: number;
+    height: number;
+    direction: string
+    Division: string;
+    Controller?: string
+    | null }>>([]);
+  
   console.log('divisionLists（State直後）=', divisionLists);
 
   useEffect(() => {
@@ -213,22 +316,41 @@ export default function App() {
   }, [divisionLists]);
 
   async function listPost() {
-    const { data, errors } = await client.queries.listDivision({
+
+    const { data: divisionData, errors: divisionErrors } = await client.queries.listDivision({
       Controller: "Mutsu01",
     });
-    console.log('data（関数内）=', data);
-    //divisionLists の状態を更新
-    if (data) {
-      setPosts(data as Array<{ Division: string; DivisionName: string; Geojson: string; Controller?: string | null }>); // 型を明示的にキャストする
+
+    const { data: deviceData, errors: deviceErrors } = await client.queries.listDevice({
+      Controller: "Mutsu01",
+    });
+
+    if (divisionData) {
+      setPosts(divisionData as Array<{ Division: string; DivisionName: string; Geojson: string; Controller?: string | null }>);
     }
-  }
 
+    if (deviceData) {
+      setDevices(deviceData as Array<{
+        Device: string;
+        DeviceName: string;
+        DeviceType: string;
+        model: string;
+        lon: number;
+        lat: number;
+        height: number;
+        direction: string;
+        Division: string;
+        Controller?: string
+        | null }>);
+    }
+}
 
-  let map; // map変数をスコープ外で定義
+  let map: maplibregl.Map; // map変数をスコープ外で定義
 
   async function renderMap() {
 
-    const map = new maplibregl.Map({
+    //const map = new maplibregl.Map({
+    map = new maplibregl.Map({
       container: 'map',
       style: {
         version: 8,
@@ -281,92 +403,128 @@ export default function App() {
     });
     map.addControl(nav, 'top-left');
 
-
-    const hexToRgba = (hex: string, alpha: number = 1): string => {
-      // HEXコードをRGBに変換
-      const r = parseInt(hex.substring(1, 3), 16);
-      const g = parseInt(hex.substring(3, 5), 16);
-      const b = parseInt(hex.substring(5, 7), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    };
-
-
     map.on('load', () => {
 
       divisionLists.forEach((division, index) => {
-        //JSON.parseを使って文字列をGeoJSONオブジェクトに変換
-        const geojsonData = JSON.parse(division.Geojson);
-        const sourceId = `floorplan-${index}`; // ユニークなIDを生成
-        const layerId = `room-extrusion-${index}`; // ユニークなIDを生成
-
-        console.log("index=", index);
-        console.log("sourceId=", sourceId);
-        console.log('geojsonData（renderMap内）=', geojsonData);
-
-        map.addSource(sourceId, {
-          type: 'geojson',
-          data: geojsonData,
-        });
-
-        map.addLayer({
-          id: layerId,
-          type: 'fill-extrusion',
-          source: sourceId,
-          paint: {
-
-            //'fill-extrusion-color': [
-              //'case',
-              //['==', ['geometry-type'], 'Polygon'], ['get', 'color'],['get', 'color']
-            //],
-            'fill-extrusion-color': ['get', 'color'],
-            'fill-extrusion-height': ['get', 'height'],
-            'fill-extrusion-base': ['get', 'base_height'],
-            'fill-extrusion-opacity': 0.4, // 底面と側面両方の透明度。
-          },
-        });
-
-        map.addLayer({
-          id: 'outline-bottom',
-          type: 'line',
-          source: sourceId,
-          paint: {
-            'line-color': '#000000',  
-            'line-width': 2          
-          }
-        });
-        
-        map.addLayer({
-          id: 'outline-sides',
-          type: 'line',
-          source: sourceId,
-          layout: {
-            'line-join': 'round',
-            'line-cap': 'round'
-          },
-          paint: {
-            'line-color': '#000000',
-            'line-width': 2
-          }
-        });
-        
-        map.addLayer({
-          id: 'outline-top',
-          type: 'line',
-          source: sourceId,
-          paint: {
-            'line-color': '#000000',
-            'line-width': 2
-          }
-        });
-        
-      
+        addGeoJsonLayerToMap(map, division, index);  
       })//endEach
 
     });
-  
+
+
+    // 3Dモデルを表示するためのカスタムレイヤーを作成
+
+    const model = deviceLists[0].model;
+
+    const worldOrigin: [number, number] = [deviceLists[0].lon, deviceLists[0].lat];
+    //const worldAltitude = 0;
+    const worldAltitude = deviceLists[0].height ;
+    //const worldRotate = [Math.PI / 2, 0, 0];
+    const worldRotate = JSON.parse(deviceLists[0].direction) as [number, number, number];
+
+
+    const worldOriginMercator = maplibregl.MercatorCoordinate.fromLngLat(worldOrigin, worldAltitude);
+    const worldScale = worldOriginMercator.meterInMercatorCoordinateUnits();
+
+    const worldMatrix = BABYLON.Matrix.Compose(
+      new BABYLON.Vector3(worldScale, worldScale, worldScale),
+      BABYLON.Quaternion.FromEulerAngles(worldRotate[0], worldRotate[1], worldRotate[2]),
+      new BABYLON.Vector3(worldOriginMercator.x, worldOriginMercator.y, worldOriginMercator.z)
+    );
+
+    const customLayer: maplibregl.CustomLayerInterface = {
+      id: '3d-model',
+      type: 'custom',
+      renderingMode: '3d',
+
+      onAdd(map: maplibregl.Map, gl: WebGLRenderingContext) {
+        // エンジン、シーン、カメラの初期化
+        const engine = new BABYLON.Engine(gl, true, { useHighPrecisionMatrix: true }, true);
+        const scene = new BABYLON.Scene(engine);
+        scene.autoClear = false;
+        scene.detachControl();
+
+        scene.beforeRender = () => {
+          if (engine) {
+            engine.wipeCaches(true);
+          }
+        };
+
+        const camera = new BABYLON.Camera('Camera', new BABYLON.Vector3(0, 0, 0), scene);
+
+        const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 0, 100), scene);
+        light.intensity = 0.7;
+
+        new BABYLON.AxesViewer(scene, 10);
+
+        // URLから.gltfファイルを読み込む
+        BABYLON.SceneLoader.LoadAssetContainerAsync(
+          //'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/34M_17.gltf',
+          'https://pckk-device.s3.ap-southeast-2.amazonaws.com/',
+          //'sample.gltf',
+          `${model}.gltf`, // ← ここで model に .gltf を連結
+
+          //'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/',
+          //'34M_17.gltf',
+
+          //'https://pckk-device.s3.ap-northeast-1.amazonaws.com/',
+          //'34M_17.gltf',
+
+          scene
+        //).then((modelContainer) => {
+        ).then((gltfJson) => { //変更。         
+          const modelContainer = gltfJson ; //変更。
+
+          modelContainer.addAllToScene();
+
+
+
+          const rootMesh = modelContainer.createRootMesh();
+          const rootMesh2 = rootMesh.clone();
+
+          rootMesh2.position.x = 25;
+          rootMesh2.position.z = 25;
+        });
+
+        // プロパティをカスタムレイヤーオブジェクトに追加
+        (this as any).map = map;
+        (this as any).engine = engine;
+        (this as any).scene = scene;
+        (this as any).camera = camera;
+      },
+
+      render(gl: WebGLRenderingContext, args: any) {
+        const cameraMatrix = BABYLON.Matrix.FromArray(args.defaultProjectionData.mainMatrix);
+        const wvpMatrix = worldMatrix.multiply(cameraMatrix);
+
+        if ((this as any).camera) {
+          (this as any).camera.freezeProjectionMatrix(wvpMatrix);
+        }
+        if ((this as any).scene) {
+          (this as any).scene.render(false);
+        }
+        if ((this as any).map) {
+          (this as any).map.triggerRepaint();
+        }
+      }
+    };
+
+    // 3Dモデルを地図に追加
+    map.on('style.load', () => {
+      if (!map.getLayer('3d-model')) {
+        map.addLayer(customLayer);
+      }
+    });
+
+    return () => {
+      map.remove();
+    };
+
   }
 
   return <div id="map" style={{ height: '80vh', width: '80%' }} />;
 
 }
+
+
 
