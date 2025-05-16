@@ -521,11 +521,6 @@ export default function App() {
 
       render(gl: WebGLRenderingContext, args: any) {
 
-        if (!args.defaultProjectionData || !args.defaultProjectionData.mainMatrix) {
-          console.error("defaultProjectionData is undefined", args);
-          return;
-        }
-
         const cameraMatrix = BABYLON.Matrix.FromArray(args.defaultProjectionData.mainMatrix);
         const wvpMatrix = worldMatrix.multiply(cameraMatrix);
 
@@ -545,10 +540,19 @@ export default function App() {
     };
 
     // 3Dモデルを地図に追加
+
+    //map.on('style.load', () => {
+      //if (!map.getLayer('3d-model')) {
+        //map.addLayer(customLayer);
+      //}
+    //});
+
     map.on('style.load', () => {
-      if (!map.getLayer('3d-model')) {
-        map.addLayer(customLayer);
-      }
+      setTimeout(() => {
+        if (!map.getLayer('3d-model')) {
+          map.addLayer(customLayer);
+        }
+      }, 100);
     });
 
     return () => {
