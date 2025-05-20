@@ -414,8 +414,9 @@ export default function App() {
       id: '3d-model',
       type: 'custom',
       renderingMode: '3d',
-     /*
+
       onAdd(map: maplibregl.Map, gl: WebGLRenderingContext) {
+
         // エンジン、シーン、カメラの初期化
         const engine = new BABYLON.Engine(gl, true, { useHighPrecisionMatrix: true }, true);
         const scene = new BABYLON.Scene(engine);
@@ -427,7 +428,7 @@ export default function App() {
             engine.wipeCaches(true);
           }
         };
-
+        /*
         const camera = new BABYLON.Camera('Camera', new BABYLON.Vector3(0, 0, 0), scene);
 
         const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 0, 100), scene);
@@ -472,9 +473,10 @@ export default function App() {
         (this as any).engine = engine;
         (this as any).scene = scene;
         (this as any).camera = camera;
+      */
       },
 
-    */
+
       render(gl: WebGLRenderingContext, args: any) {
         const cameraMatrix = BABYLON.Matrix.FromArray(args.defaultProjectionData.mainMatrix);
         const wvpMatrix = worldMatrix.multiply(cameraMatrix);
