@@ -13,6 +13,8 @@
     "@types/maplibre-gl": "^1.13.2",
     "@types/react-datepicker": "^6.2.0",
     "aws-amplify": "^6.6.6",
+    "babylonjs": "^8.8.5",
+    "babylonjs-loaders": "^8.8.5",
     "date-fns": "^4.1.0",
     "maplibre-gl": "^2.4.0",
     "maplibre-gl-js-amplify": "^4.0.2",
