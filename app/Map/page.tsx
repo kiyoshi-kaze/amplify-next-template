@@ -440,7 +440,7 @@ export default function App() {
         const gltfJson = JSON.parse(deviceLists[0].gltf);
         console.log('gltfJson[0]=', gltfJson);
 
-
+      */
         // URLから.gltfファイルを読み込む
         BABYLON.SceneLoader.LoadAssetContainerAsync(
           //'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/34M_17.gltf',
@@ -472,8 +472,8 @@ export default function App() {
         (this as any).map = map;
         (this as any).engine = engine;
         (this as any).scene = scene;
-        (this as any).camera = camera;
-      */
+        //(this as any).camera = camera;
+
       },
 
 
