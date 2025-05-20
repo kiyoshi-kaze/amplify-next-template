@@ -408,13 +408,13 @@ export default function App() {
       new BABYLON.Vector3(worldOriginMercator.x, worldOriginMercator.y, worldOriginMercator.z)
     );
 
-     /*
+
 
     const customLayer: maplibregl.CustomLayerInterface = {
       id: '3d-model',
       type: 'custom',
       renderingMode: '3d',
-
+     /*
       onAdd(map: maplibregl.Map, gl: WebGLRenderingContext) {
         // エンジン、シーン、カメラの初期化
         const engine = new BABYLON.Engine(gl, true, { useHighPrecisionMatrix: true }, true);
@@ -474,6 +474,7 @@ export default function App() {
         (this as any).camera = camera;
       },
 
+    */
       render(gl: WebGLRenderingContext, args: any) {
         const cameraMatrix = BABYLON.Matrix.FromArray(args.defaultProjectionData.mainMatrix);
         const wvpMatrix = worldMatrix.multiply(cameraMatrix);
@@ -501,7 +502,7 @@ export default function App() {
       map.remove();
     };
 
-    */
+
 
   }
 
