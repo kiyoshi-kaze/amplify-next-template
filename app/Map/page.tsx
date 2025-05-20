@@ -392,7 +392,7 @@ export default function App() {
 
     });
 
-    /*
+   
     // 3Dモデルを表示するためのカスタムレイヤーを作成
 
     const worldOrigin: [number, number] = [140.302994, 35.353503];
@@ -407,6 +407,8 @@ export default function App() {
       BABYLON.Quaternion.FromEulerAngles(worldRotate[0], worldRotate[1], worldRotate[2]),
       new BABYLON.Vector3(worldOriginMercator.x, worldOriginMercator.y, worldOriginMercator.z)
     );
+
+     /*
 
     const customLayer: maplibregl.CustomLayerInterface = {
       id: '3d-model',
@@ -500,7 +502,7 @@ export default function App() {
     };
 
     */
-   
+
   }
 
   return <div id="map" style={{ height: '80vh', width: '80%' }} />;
