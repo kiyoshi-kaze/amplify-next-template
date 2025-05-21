@@ -486,7 +486,9 @@ export default function App() {
     // 3Dモデルを地図に追加
     map.on('style.load', () => {
       if (!map.getLayer('3d-model')) {
+        console.log("Adding 3D model layer...");
         map.addLayer(customLayer);
+        console.log("3D model layer added successfully.");
       }
     });
 
