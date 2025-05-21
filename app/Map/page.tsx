@@ -416,7 +416,8 @@ export default function App() {
 
         // エンジン、シーン、カメラの初期化
         //const engine = new BABYLON.Engine(gl, true, { useHighPrecisionMatrix: true }, true);
-        const engine = new BABYLON.Engine(gl, true, { useHighPrecisionMatrix: false }, true);
+        //const engine = new BABYLON.Engine(gl, true, { useHighPrecisionMatrix: false }, true);
+        const engine = new BABYLON.Engine(gl, false);
         const scene = new BABYLON.Scene(engine);
         scene.autoClear = false;
         scene.detachControl();
