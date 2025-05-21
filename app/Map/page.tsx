@@ -442,9 +442,9 @@ export default function App() {
           'sample.gltf',
 
           scene
-        //).then((modelContainer) => {
-        ).then((gltfJson) => { //変更。         
-          const modelContainer = gltfJson ; //変更。
+        ).then((modelContainer) => {
+        //).then((gltfJson) => { //変更。         
+          //const modelContainer = gltfJson ; //変更。
 
           modelContainer.addAllToScene();
 
@@ -492,9 +492,9 @@ export default function App() {
       }
     });
 
-    //return () => {
-      //map.remove();
-    //};
+    return () => {
+      map.remove();
+    };
 
 
 
