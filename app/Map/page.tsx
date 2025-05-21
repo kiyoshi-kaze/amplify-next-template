@@ -256,7 +256,6 @@ export default function App() {
 */
 
 
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -408,8 +407,6 @@ export default function App() {
       new BABYLON.Vector3(worldOriginMercator.x, worldOriginMercator.y, worldOriginMercator.z)
     );
 
-
-
     const customLayer: maplibregl.CustomLayerInterface = {
       id: '3d-model',
       type: 'custom',
@@ -436,21 +433,11 @@ export default function App() {
 
         new BABYLON.AxesViewer(scene, 10);
 
-        //const gltfJson = JSON.parse(device.gltf);
-        //const gltfJson = JSON.parse(deviceLists[0].gltf);
-        //console.log('gltfJson[0]=', gltfJson);
-
-
         // URLから.gltfファイルを読み込む
         BABYLON.SceneLoader.LoadAssetContainerAsync(
           //'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/34M_17.gltf',
           'https://pckk-device.s3.ap-southeast-2.amazonaws.com/',
           'sample.gltf',
-          //'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/',
-          //'34M_17.gltf',
-
-          //'https://pckk-device.s3.ap-northeast-1.amazonaws.com/',
-          //'34M_17.gltf',
 
           scene
         //).then((modelContainer) => {
@@ -493,7 +480,7 @@ export default function App() {
       }
     };
 
-    /*
+
     // 3Dモデルを地図に追加
     map.on('style.load', () => {
       if (!map.getLayer('3d-model')) {
@@ -501,10 +488,10 @@ export default function App() {
       }
     });
 
-    return () => {
-      map.remove();
-    };
-    */
+    //return () => {
+      //map.remove();
+    //};
+
 
 
   }
