@@ -391,7 +391,7 @@ export default function App() {
 
     });
 
-   
+
     // 3Dモデルを表示するためのカスタムレイヤーを作成
 
     const worldOrigin: [number, number] = [140.302994, 35.353503];
@@ -413,11 +413,8 @@ export default function App() {
       renderingMode: '3d',
 
       onAdd(map: maplibregl.Map, gl: WebGLRenderingContext) {
-
         // エンジン、シーン、カメラの初期化
-        //const engine = new BABYLON.Engine(gl, true, { useHighPrecisionMatrix: true }, true);
-        //const engine = new BABYLON.Engine(gl, true, { useHighPrecisionMatrix: false }, true);
-        const engine = new BABYLON.Engine(gl, false);
+        const engine = new BABYLON.Engine(gl, true, { useHighPrecisionMatrix: true }, true);
         const scene = new BABYLON.Scene(engine);
         scene.autoClear = false;
         scene.detachControl();
@@ -435,16 +432,26 @@ export default function App() {
 
         new BABYLON.AxesViewer(scene, 10);
 
+        //const gltfJson = JSON.parse(device.gltf);
+        const gltfJson = JSON.parse(deviceLists[0].gltf);
+        console.log('gltfJson[0]=', gltfJson);
+
+
         // URLから.gltfファイルを読み込む
         BABYLON.SceneLoader.LoadAssetContainerAsync(
           //'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/34M_17.gltf',
           'https://pckk-device.s3.ap-southeast-2.amazonaws.com/',
           'sample.gltf',
+          //'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/',
+          //'34M_17.gltf',
+
+          //'https://pckk-device.s3.ap-northeast-1.amazonaws.com/',
+          //'34M_17.gltf',
 
           scene
-        ).then((modelContainer) => {
-        //).then((gltfJson) => { //変更。         
-          //const modelContainer = gltfJson ; //変更。
+        //).then((modelContainer) => {
+        ).then((gltfJson) => { //変更。         
+          const modelContainer = gltfJson ; //変更。
 
           modelContainer.addAllToScene();
 
@@ -462,9 +469,7 @@ export default function App() {
         (this as any).engine = engine;
         (this as any).scene = scene;
         (this as any).camera = camera;
-
       },
-
 
       render(gl: WebGLRenderingContext, args: any) {
         const cameraMatrix = BABYLON.Matrix.FromArray(args.defaultProjectionData.mainMatrix);
@@ -482,21 +487,16 @@ export default function App() {
       }
     };
 
-
     // 3Dモデルを地図に追加
     map.on('style.load', () => {
       if (!map.getLayer('3d-model')) {
-        console.log("Adding 3D model layer...");
         map.addLayer(customLayer);
-        console.log("3D model layer added successfully.");
       }
     });
 
     return () => {
       map.remove();
     };
-
-
 
   }
 
