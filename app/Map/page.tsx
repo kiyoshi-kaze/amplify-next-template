@@ -484,11 +484,11 @@ export default function App() {
 
 
     // 3Dモデルを地図に追加
-    //map.on('style.load', () => {
-      //if (!map.getLayer('3d-model')) {
-        //map.addLayer(customLayer);
-      //}
-    //});
+    map.on('style.load', () => {
+      if (!map.getLayer('3d-model')) {
+        map.addLayer(customLayer);
+      }
+    });
 
     return () => {
       map.remove();
