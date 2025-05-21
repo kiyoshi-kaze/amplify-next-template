@@ -428,9 +428,9 @@ export default function App() {
             engine.wipeCaches(true);
           }
         };
-        /*
-        const camera = new BABYLON.Camera('Camera', new BABYLON.Vector3(0, 0, 0), scene);
 
+        const camera = new BABYLON.Camera('Camera', new BABYLON.Vector3(0, 0, 0), scene);
+        /*
         const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 0, 100), scene);
         light.intensity = 0.7;
 
@@ -472,7 +472,7 @@ export default function App() {
         (this as any).map = map;
         (this as any).engine = engine;
         (this as any).scene = scene;
-        //(this as any).camera = camera;
+        (this as any).camera = camera;
 
       },
 
