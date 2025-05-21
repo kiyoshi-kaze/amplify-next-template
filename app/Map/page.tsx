@@ -492,9 +492,9 @@ export default function App() {
       }
     });
 
-    return () => {
-      map.remove();
-    };
+    //return () => {
+      //map.remove();
+    //};
 
 
 
