@@ -430,17 +430,17 @@ export default function App() {
         };
 
         const camera = new BABYLON.Camera('Camera', new BABYLON.Vector3(0, 0, 0), scene);
-        /*
+
         const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 0, 100), scene);
         light.intensity = 0.7;
 
         new BABYLON.AxesViewer(scene, 10);
 
         //const gltfJson = JSON.parse(device.gltf);
-        const gltfJson = JSON.parse(deviceLists[0].gltf);
-        console.log('gltfJson[0]=', gltfJson);
+        //const gltfJson = JSON.parse(deviceLists[0].gltf);
+        //console.log('gltfJson[0]=', gltfJson);
 
-      */
+
         // URLから.gltfファイルを読み込む
         BABYLON.SceneLoader.LoadAssetContainerAsync(
           //'https://maplibre.org/maplibre-gl-js/docs/assets/34M_17/34M_17.gltf',
