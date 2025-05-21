@@ -415,7 +415,8 @@ export default function App() {
       onAdd(map: maplibregl.Map, gl: WebGLRenderingContext) {
 
         // エンジン、シーン、カメラの初期化
-        const engine = new BABYLON.Engine(gl, true, { useHighPrecisionMatrix: true }, true);
+        //const engine = new BABYLON.Engine(gl, true, { useHighPrecisionMatrix: true }, true);
+        const engine = new BABYLON.Engine(gl, true, { useHighPrecisionMatrix: false }, true);
         const scene = new BABYLON.Scene(engine);
         scene.autoClear = false;
         scene.detachControl();
